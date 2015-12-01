@@ -1,0 +1,12 @@
+# Ignorer fichiers pyc, sqlite, cfg
+# et le dossier /static
+*.pyc
+*.sqlite
+*.cfg
+*.geany
+/app/static/music
+/tmp
+
+run.py
+config.py
+requirements.txt

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}Apiclock - Radios{% endblock %}
+{% block page_content %}
+
+    <h2> MUSIQUE </h2>
+    <div>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Jouer</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for radio in radios %}
+                <tr>
+                    <td>{{ radio.name }} </td>
+                    <td>
+                        <a href="{{url_for('radio.local', radio=radio.url)}}" 
+                            class="btn btn-default btn-sm active" role="button">Local</a>
+                        <a href="{{url_for('radio.distant', radio=radio.url)}}" 
+                            class="btn btn-primary btn-sm active" role="button">Distant</a>
+                    </td>
+                    <td>
+                        <a href="{{url_for('radio.index', action='1', radioe=radio.id)}}"
+                           class="btn btn-danger btn-sm active" role="button">Supprimer </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody
+        </table>
+    </div>
+{% endblock %}

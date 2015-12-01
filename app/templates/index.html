@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Apiclock{% endblock %}
+
+{% block page_content %}
+    {% if current_user.is_authenticated() %}
+        Hello {{ current_user.name }}
+    {% else %}
+
+    {% include '_index.html' %}
+
+    {% endif %}
+
+{% endblock %}
+
+{% include '_footer.html' %}

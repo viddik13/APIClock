@@ -1,0 +1,174 @@
+{% extends "bootstrap/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}Apiclock{% endblock %}
+
+<head>
+{% block head %}
+{{ super() }}
+<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+<link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+<script type="text/javascript" src="{{ url_for('static', filename='js/date_heure.js') }}"></script>
+
+<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+
+{% endblock %}
+
+{% block navbar %}
+    <div class="navbar navbar-inverse" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+
+    <!--      AFFICHAGE PUBLIC          -->
+            {% if current_user.is_authenticated() %}
+                <a class="navbar-brand" href="{{ url_for('main.dashboard') }}">APIClock</a>
+            {% else %}
+                 <a class="navbar-brand" href="{{ url_for('main.index') }}">APIClock</a>
+            {% endif %}
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    {% if not current_user.is_authenticated() %}
+                        <li><a href="{{ url_for('main.installation') }}">Installation</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li >
+                        {% if form2 is defined %}
+                            <form method="POST" action="/" class="form-inline"
+                                style="margin-top:12px;">
+                                {{ form2.hidden_tag() }}
+                                {{ form2.email }} {{ form2.password }} {{ form2.remember_me }}
+                                {{ form2.submit }}
+                            </form>
+                        {% endif %}
+                    </li>
+                    <li><a href="{{ url_for('main.contact') }}">Contact</a></li>
+                </ul>
+                    {% endif %}
+
+    <!--      SEMI PRIVATE          -->
+
+                    {% if current_user.is_authenticated() and not current_user.is_administrator() %}
+                        <li><a href="{{ url_for('main.contact') }}">Contact</a></li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        {# MPD status #}
+                        {% if test =='play' %}
+                            <li><a href="#" style="background-color:yellow;">MPD ON</a></li>
+                        {% else %}
+                            <li><a href="#" style="background-color:#333333;">MPD OFF</a></li>
+                        {% endif %}
+
+                    <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <img src="{{ current_user.gravatar(size=18) }}">
+                                Account <b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a href="{{ url_for('main.user', username=current_user.username) }}">Profile</a></li>
+                                <li><a href="{{ url_for('auth.change_password') }}">Change Password</a></li>
+                                <li><a href="{{ url_for('auth.change_email_request') }}">Change Email</a></li>
+                                <li><a href="{{ url_for('auth.logout') }}">Log Out</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                    {% endif %}
+
+    <!--      ADMIN          -->
+
+                    {% if current_user.is_administrator() %}
+                    <li><a href="{{ url_for('main.dashboard') }}">Dashboard</a></li>
+                    <li><a href="{{ url_for('alarm.index') }}">Alarme</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            Médias <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="{{ url_for('radio.index') }}">Radios</a></li>
+                            <li><a href="{{ url_for('radio.podcast', action='rien') }}">Podcasts</a></li>
+                            <li><a href="{{ url_for('radio.music') }}">Musique</a></li>
+                        </ul>
+                    </li>
+                    {% endif %}
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    {% if current_user.is_administrator() %}
+
+                    {# MPD status #}
+                    {% if test =='play' %}
+                        <li><a href="#" style="background-color:yellow;">MPD ON</a></li>
+                    {% else %}
+                        <li><a href="#" style="background-color:#333333;">MPD OFF</a></li>
+                    {% endif %}
+
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <img src="{{ current_user.gravatar(size=18) }}">
+                            Account <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="{{ url_for('main.user', username=current_user.username) }}">Profile</a></li>
+                            <li><a href="{{ url_for('auth.change_password') }}">Change Password</a></li>
+                            <li><a href="{{ url_for('auth.change_email_request') }}">Change Email</a></li>
+                            <li><a href="{{ url_for('auth.logout') }}">Log Out</a></li>
+                            <li><a href="{{ url_for('main.users') }}">Users</a></li>
+                        </ul>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+    {% block content %}
+
+        {% if request.path == "/" %}
+            <!-- <div id="myCarousel" class="carousel slide">
+                <div class="carousel-inner">
+                      <div class="item active">
+                        <div class="fill" style="background-image:url(http://jeromefiot.fr/static/img/ieps.jpg)"></div>
+                        <div class="carousel-caption">
+                            <p>
+                                <h3 style="background: #463265; height: 60px; line-height: 50px; padding-top:5px;">
+                                    Besoin d'un expert digital ?
+                                </h3>
+                            </p>
+                            <p>
+                                <a class="btn btn-large btn-primary" href="mailto:j_fiot@hotmail.com">CONTACTEZ-MOI : +33(6).512.502.66</a>
+                            </p>
+                        </div>
+                      </div>
+                </div>
+            </div> -->
+        {% endif %}
+
+        <div class="container">
+            <div class="section">
+                {% for message in get_flashed_messages() %}
+                <div class="alert alert-warning">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    {{ message }}
+                </div>
+                {% endfor %}
+
+                {% block page_content %}{% endblock %}
+
+            </div>
+        </div>
+    {% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    {{ moment.include_moment() }}
+    {{ moment.lang("fr") }}
+{% endblock %}
