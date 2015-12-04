@@ -82,7 +82,8 @@
                 {% endfor %}
             </select>
         </div>
-        <input class="btn btn-default" id="form1-submit" name="form1-submit" type="submit" value="Jouer1">
+        <input class="btn btn-primary" id="form1-submit" name="form1-submit" type="submit" value="Jouer">
+        <a href="{{ url_for('radio.index') }}" class="btn btn-success" role="button">Add media</a>
     </form>
 </div>
 
@@ -129,6 +130,9 @@
     {% for alarm in alarms %}
         {{alarm.namealarme}}  //  {{alarm.days}} - {{alarm.startdate}} <br/>
     {% endfor %}
+    <br/>
+    <a href="{{ url_for('alarm.index') }}" class="btn btn-primary active" role="button">Add alarm</a>
+    <a href="" class="btn btn-success" role="button">See all</a>
 </div>
 
 {% endblock %}
