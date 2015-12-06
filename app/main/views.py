@@ -100,9 +100,17 @@ def dashboard(action,
       musique="http://audio.scdn.arkena.com/11010/franceculture-midfi128.mp3"):
 
     """Get and Print MPD state."""
-    client = MPDClient()
-    client.connect("localhost", 6600)
-    test = client.status()['state']
+    # client = MPDClient()
+    #
+    # # try to connect to MPD if not, print error
+    # try:
+    #     client.connect("localhost", 6600)
+    #     test = client.status()['state']
+    # except IOError, e:
+    #     print e
+    #     test = None
+    MPDstatut = None
+    connectMPD()
 
     alarms = Alarm.query.filter_by(users=current_user.id).all()
 
@@ -165,7 +173,7 @@ def dashboard(action,
     else:
         return render_template('dashboard.html', form1=form1,
                                formsnooze=formsnooze, alarms=alarms,
-                               test=test)
+                               test=MPDstatut)
 
 
 @main.route('/edit-profile', methods=['GET', 'POST'])

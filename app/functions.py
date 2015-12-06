@@ -1,8 +1,13 @@
-import os, sys, time
+import os
+import sys
+import time
+import feedparser
 
 from crontab import CronTab
 from mpd import MPDClient
 from threading import Thread
+from sqlalchemy.sql import and_
+from flask.ext.login import current_user
 
 from . import db
 from .models import Alarm, Music
@@ -84,10 +89,12 @@ def getpodcasts():
     podcasts = Music.query.filter(and_(Music.music_type == '2',
                                        Music.users == current_user.id)).all()
     listepodcast = []
-    #Get URL of all emissions off the podcast
+    # Get URL of all emissions off the podcast
     for emission in podcasts:
-        d         = feedparser.parse(emission.url)
-        emissions =[(d.entries[i]['title'],d.entries[i].enclosures[0]['href']) for i,j in enumerate(d.entries)]
+        d = feedparser.parse(emission.url)
+        emissions = [(d.entries[i]['title'],
+                     d.entries[i].enclosures[0]['href'])
+                     for i, j in enumerate(d.entries)]
         listepodcast.append(emissions)
     return listepodcast
 
@@ -99,20 +106,26 @@ def connectMPD():
     client.idletimeout = None  # timeout for fetching result of idle comm.
     try:
         client.connect("localhost", 6600)  # connect to localhost:6600
+        global MPDstatut                  # get and modify MPD statut in navbar
+        MPDstatut = client.status()['state']
     except Exception:
-        print "Cant Connect to MPD..."
+        print "Can't Connect to MPD..."
+        global MPDstatut
+        MPDstatut = None
 
 
 def jouerMPD(path ='http://audio.scdn.arkena.com/11010/franceculture-midfi128.mp3'):
     """Play mpd with url playlist in arg."""
-    client             = MPDClient() # create client object
-    client.timeout     = 10          # network timeout in seconds
+    client = MPDClient()    # create client object
+    client.timeout = 10     # network timeout in seconds
     client.idletimeout = None
     try:
         client.connect("localhost", 6600)  # connect to localhost:6600
         client.clear()
         client.add(path)
         client.play()
+        global test             # get and modify MPD statut in navbar
+        test = client.status()['state']
     except Exception:
         print "Can't Connect to MPD..."
 
@@ -120,11 +133,18 @@ def jouerMPD(path ='http://audio.scdn.arkena.com/11010/franceculture-midfi128.mp
 def stopMPD():
     """ Stop MPD """
     client = MPDClient()               # create client object
-    client.connect("localhost", 6600)  # connect to localhost:6600
-    client.clear()
-    client.stop()
-    client.close()
-    client.disconnect()                # disconnect from the server
+    try:
+        client.connect("localhost", 6600)  # connect to localhost:6600
+        client.clear()
+        client.stop()
+        client.close()
+        client.disconnect()  # disconnect from the server
+        global MPDstatut     # get and modify MPD statut in navbar
+        MPDstatut = client.status()['state']
+    except Exception:
+        print "Can't Connect to MPD..."
+        global MPDstatut
+        MPDstatut = None
 
 
 def snooze(radiosnooze, minutessnooze):
