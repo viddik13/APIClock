@@ -120,24 +120,23 @@ def dashboard(action,
     elif form1.submit.data:
         """ Depending on media type get id and then request for url """
 
-        if form1.radio.data != 0:
+        if form1.radio.data != "0":
             mediaid = form1.radio.data
-            # print "MEDIA_ID : "+mediaid
-        elif form1.music.data != 0:
+            print "RADIO // MEDIA_ID : "+mediaid
+        elif form1.radio.data == "0" and form1.music.data != "0":
             mediaid = form1.music.data
-            # print "MEDIA_ID : "+mediaid
-        elif form1.music.data == 0 and form1.radio.data == 0:
-            mediaid = 0
+            print "MUSIC // MEDIA_ID : "+mediaid
+        elif form1.radio.data == "0" and form1.music.data == "0":
+            mediaid = "0"
         else:
             pass
 
         if mediaid != "0":
             choosen_media = Music.query.filter(Music.id == mediaid).first()
-            test = jouerMPD(choosen_media.url)
+            jouerMPD(choosen_media.url)
             print choosen_media.url
         else:
             flash("No media selected, please select a radio or music !")
-            print "zobi"
 
         return redirect(url_for('.dashboard'))
 
