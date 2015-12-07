@@ -134,7 +134,7 @@ def dashboard(action,
         if mediaid != "0":
             choosen_media = Music.query.filter(Music.id == mediaid).first()
             # Well Format name for mp3 (need update /etc/mpd/.conf)
-            choosen_media = choosen_media.nom.encode('utf-8')
+            choosen_media = choosen_media.name.encode('utf-8')
             jouerMPD(choosen_media)
 
         else:
