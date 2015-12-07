@@ -135,17 +135,23 @@ def podcast(action):
         return render_template('radio/shows.html', shows=shows,
                                titre=podcast.name)
 
-    elif action == "donwload":
-        """ Download podcast as music type media in music directory """
-        up_dir = "/home/pi/apiclock/app/static/musique/"
+    elif action == "download":
+        """Download podcast as music type media in music directory."""
+        up_dir = current_app.config['UPLOAD_FOLDER']
         urlmusic = request.args.get('urlpodcast')
+
+        print "URL : "+request.args.get('urlpodcast')
+
         name_podcast = 'PODCAST_' + request.args.get('nompodcast')
+        print "DIR : "+up_dir
+        print "NOM : "+name_podcast
+
         try:
-            stock_music = urllib.urlretrieve(urlmusic, up_dir + name_podcast)
+            urllib.urlretrieve(urlmusic, up_dir + name_podcast)
             # TO ADD : check the disk space
             addmusic = Music(
                     name=name_podcast,
-                    url="http://jeromefiot.fr/static/musique/" + name_podcast,
+                    url=current_app.config['UPLOAD_FOLDER'] + name_podcast,
                     music_type=3,
                     users=current_user.id)
             db.session.add(addmusic)
