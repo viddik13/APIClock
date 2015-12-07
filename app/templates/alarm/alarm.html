@@ -10,7 +10,7 @@
             $("#form1-radios").show();
             $("#form1-podcasts").hide();
             $("#form1-musics").hide();
-            
+
             $("#form1-media").change(function() {
                 if ($("#form1-media").val() == "1"){
                     $("#form1-radios").show();
@@ -54,13 +54,13 @@
     </div>
 </div>
 
-<!-- ********************************************************** 
+<!-- **********************************************************
 http://tympanus.net/codrops/2013/05/21/natural-language-form-with-custom-input-elements/
 ********************************************************** -->
-
+<!--
 <div class="main clearfix">
     <form id="nl-form" class="nl-form">
-        I feel to eat 
+        I feel to eat
         <select>
             <option value="1" selected>any food</option>
             <option value="2">Indian</option>
@@ -77,62 +77,57 @@ http://tympanus.net/codrops/2013/05/21/natural-language-form-with-custom-input-e
             <option value="2">romantic</option>
         </select>
         restaurant
-        <br />at 
+        <br />at
         <select>
             <option value="1" selected>anytime</option>
             <option value="1">7 p.m.</option>
             <option value="2">8 p.m.</option>
             <option value="3">9 p.m.</option>
         </select>
-<!--         in <input type="text" value="" placeholder="any city" data-subline="For example: <em>Los Angeles</em> or <em>New York</em>"/> -->
         <div class="nl-submit-wrap">
             <button class="nl-submit" type="submit">Add Alarm</button>
         </div>
         <div class="nl-overlay"></div>
     </form>
-</div>
-<!-- ********************************************************** --> 
+</div> -->
+<!-- ********************************************************** -->
 <!-- ********************************************************** -->
 <hr>
     <form action="" method="post" class="form" role="form">
-        {{ form1.hidden_tag() }}
-        
-        {{ wtf.form_field(form1.name) }}
-        {{ wtf.form_field(form1.state) }}
-        {{ wtf.form_field(form1.heures) }}
-        {{ wtf.form_field(form1.minutes) }}
-        {{ wtf.form_field(form1.repetition) }}
-        {{ wtf.form_field(form1.jours) }}
-        
-        <div class="form-group" id="form1-medias"><label class="control-label" for="form1-media">{{ form1.media.label }}</label>
+        {{ form.hidden_tag() }}
+
+        {{ wtf.form_field(form.name) }}
+        {{ wtf.form_field(form.state) }}
+        {{ wtf.form_field(form.heures) }}
+        {{ wtf.form_field(form.minutes) }}
+        {{ wtf.form_field(form.repetition) }}
+        {{ wtf.form_field(form.jours) }}
+
+        <!-- <div class="form-group" id="form1-medias"><label class="control-label" for="form1-media">  form.media.label  </label>
             <select class="form-control" id="form1-media" name="form1-media">
-            {% for choice in form1.media.choices %}
-                <option value="{{choice[0]}}">{{ choice[1] }}</option>
-            {% endfor %}
+            % for choice in form.media.choices %
+                <option value="  choice[0]  ">  choice[1]  </option>
+            % endfor %
             </select>
-        </div>
-        <div class="form-group" id="form1-radios"><label class="control-label" for="form1-radio">{{ form1.radio.label }}</label>
-            <select class="form-control" id="form1-radio" name="form1-radio">
-            {% for radio in form1.radio.choices %}
-                <option value="{{radio[0]}}">{{ radio[1] }}</option>
-            {% endfor %}
-            </select>
-        </div>
-        <div class="form-group" id="form1-podcasts"><label class="control-label" for="form1-podcast">{{ form1.podcast.label }}</label>
+        </div> -->
+
+        {{ wtf.form_field(form.Radio) }}
+
+        <!-- <div class="form-group" id="form1-podcasts"><label class="control-label" for="form1-podcast">  form.podcast.label  </label>
             <select class="form-control" id="form1-podcast" name="form1-podcast">
-            {% for podcast in form1.podcast.choices %}
-                <option value="{{podcast[0]}}">{{ podcast[1] }}</option>
-            {% endfor %}
+            % for podcast in form.podcast.choices %
+                <option value="  podcast[0]  ">  podcast[1]  </option>
+            % endfor %
             </select>
         </div>
-        <div class="form-group" id="form1-musics"><label class="control-label" for="form1-music">{{ form1.music.label }}</label>
+        <div class="form-group" id="form1-musics"><label class="control-label" for="form1-music">  form.music.label  </label>
             <select class="form-control" id="form1-music" name="form1-music">
-                {% for music in form1.music.choices %}
-                    <option value="{{music[0]}}">{{ music[1] }}</option>
-                {% endfor %}
+                % for music in form.music.choices %
+                    <option value="  music[0]  ">  music[1]  </option>
+                % endfor %
             </select>
-        </div>
-        {{ wtf.form_field(form1.submit) }}
+        </div> -->
+        {{ wtf.form_field(form.submit) }}
     </form>
 
 <hr>

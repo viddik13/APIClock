@@ -27,7 +27,7 @@ def index(action, idr):
     form2 = addAlarmForm2(state=True)
     monalarme = {}
 
-    if form.validate_on_submit():
+    if form.submit.data:
         monalarme['nom'] = form.name.data
         if form.state.data:
             monalarme['state'] = '1'
@@ -79,6 +79,7 @@ def index(action, idr):
     # ******************************************************************
 
     elif form2.submit.data:
+        print 'test'
         monalarme['nom'] = form2.name.data
         if form2.state.data:
             monalarme['state'] = '1'
@@ -86,7 +87,9 @@ def index(action, idr):
             monalarme['state'] = '0'
         # monalarme['duration'] = form.duration.data
         monalarme['heure'] = form2.heures.data
+        print monalarme['heure']
         monalarme['minute'] = form2.minutes.data
+        print monalarme['minute']
         monalarme['repetition'] = form2.repetition.data
         monalarme['jours'] = form2.jours.data
         monalarme['path'] = form2.radio.data
@@ -144,15 +147,15 @@ def index(action, idr):
         # edit alarm by id (idr)
         alarmeedit = Alarm.query.filter(Alarm.id == idr).first()
         form = addAlarmForm(obj=alarmeedit)
-        return render_template("alarm/alarm2.html", form=form, form2=form2,
+        return render_template("alarm/alarm.html", form=form, form2=form2,
                                user=current_user, alarms=alarms, radios=radios)
 
     elif action == '3':
         # Call statealarm function which activate / deactivate alarm
         statealarm(idr)
-        return render_template("alarm/alarm2.html", form=form, form2=form2,
+        return render_template("alarm/alarm.html", form=form, form2=form2,
                                user=current_user, alarms=alarms, radios=radios)
 
     else:
-        return render_template("alarm/alarm2.html", form=form, form2=form2,
+        return render_template("alarm/alarm.html", form=form, form2=form2,
                                user=current_user, alarms=alarms, radios=radios)

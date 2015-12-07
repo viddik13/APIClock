@@ -42,14 +42,14 @@
 		<div class="container demo-1">
 			<!-- Top Navigation -->
 			<div class="main clearfix">
-				<form id="nl-form" class="nl-form">
-					<br/>
+				<form id="nl-form" action="" method="post" role="form">
+                    {{ form2.hidden_tag() }}
 					I would like to listen to
                     <select id="media" >
                         <option value="0" selected>this media type</option>
                         {% for choice in form2.media.choices %}
                             {% if choice[1] != "Podcast" %}
-                                <option value="{{choice[0]}}">{{ choice[1]|replace("Musique", "Music") }}</option>
+                                <option value="{{ choice[0] }}">{{ choice[1]|replace("Musique", "Music") }}</option>
                             {% endif %}
                         {% endfor %}
                     </select>
@@ -59,7 +59,7 @@
                         <select >
                             <option value="0" selected>station</option>
                             {% for radio in form2.radio.choices %}
-                                <option value="{{radio[0]}}">{{ radio[1] }}</option>
+                                <option value="{{ radio[0] }}">{{ radio[1] }}</option>
                             {% endfor %}
                         </select>
                     </div>
@@ -68,30 +68,31 @@
                         <select >
                             <option selected value="0">track</option>
                             {% for music in form2.music.choices %}
-                                <option value="{{music[0]}}">{{ music[1]|slice(33) }}</option>
+                                <option value="{{ music[0] }}">{{ music[1] }}</option>
                             {% endfor %}
                         </select>
                     </div>
-
 					at
-					<select>
-						<option selected value="0">anytime</option>
-					 	<option value="1">7 p.m.</option>
-					 	<option value="2">8 p.m.</option>
-					 	<option value="3">9 p.m.</option>
-					</select>
-					<select>
+                    <select id="heures">
+                        <option selected value="0">hour</option>
+                        {% for hour in form2.heures.choices %}
+                            <option value="{{ hour[0] }}">{{ hour[1] }}</option>
+                        {% endfor %}
+                    </select>
+                     :
+                    <select id="minutes">
                         <option selected value="0">min.</option>
-					 	<option value="1"> : 00</option>
-					 	<option value="2"> : 05</option>
-					 	<option value="3"> : 10</option>
-						<option value="4"> : 15</option>
-					</select>
+                        {% for minute in form2.minutes.choices %}
+                            <option value="{{ minute[0] }}">{{ minute[1] }}</option>
+                        {% endfor %}
+                    </select>
+
         <!-- in <input type="text" value="" placeholder="any city" data-subline="For example: <em>Los Angeles</em> or <em>New York</em>"/>-->
                     <div class="nl-submit-wrap">
-                        <button class="nl-submit" type="submit">Add Alarm</button>
+                        <button class="nl-submit" type="submit">{{ wtf.form_field(form2.submit) }}</button>
 					</div>
 					<div class="nl-overlay"></div>
+                    {{ wtf.form_field(form2.submit) }}
 				</form>
 			</div>
 		</div><!-- /container -->

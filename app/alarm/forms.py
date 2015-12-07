@@ -44,8 +44,8 @@ class addAlarmForm2(Form):
     radio = SelectField('')
     podcast = SelectField('')
     music = SelectField('')
-    heures = IntegerField('Heures', validators=[NumberRange(min=0, max=23)])
-    minutes = IntegerField('Minutes', validators=[NumberRange(min=0, max=59)])
+    heures = IntegerField('')
+    minutes = IntegerField('')
     repetition = RadioField('List', choices=[('Repeter ? ',
                                              'Repeter l\'alarme')])
     jours = SelectMultipleField('jours',
@@ -79,3 +79,11 @@ class addAlarmForm2(Form):
                          for i, j in enumerate(d.entries)]
             lemissions.extend(emissions)
         self.podcast.choices = lemissions
+
+        # Hours in a day
+        hourstot = list(range(0, 23))
+        self.heures.choices = [(str(g), str(g)) for g in hourstot]
+
+        # Min. by 5 in hour
+        minutes5 = list(range(0, 60, 5))
+        self.minutes.choices = [(str(g), str(g)) for g in minutes5]
