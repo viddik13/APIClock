@@ -100,15 +100,6 @@ def dashboard(action,
       musique="http://audio.scdn.arkena.com/11010/franceculture-midfi128.mp3"):
 
     """Get and Print MPD state."""
-    # client = MPDClient()
-    #
-    # # try to connect to MPD if not, print error
-    # try:
-    #     client.connect("localhost", 6600)
-    #     test = client.status()['state']
-    # except IOError, e:
-    #     print e
-    #     test = None
     MPDstatut = None
     connectMPD()
 
@@ -131,19 +122,23 @@ def dashboard(action,
 
         if form1.radio.data != 0:
             mediaid = form1.radio.data
-        elif form1.radio.data == 0:
+            # print "MEDIA_ID : "+mediaid
+        elif form1.music.data != 0:
             mediaid = form1.music.data
+            # print "MEDIA_ID : "+mediaid
+        elif form1.music.data == 0 and form1.radio.data == 0:
+            mediaid = 0
         else:
-            mediaid = form1.music.data
+            pass
 
-        print form1.radio.data
-        print form1.music.data
-        print mediaid
-        print form1.music.choices
+        if mediaid != "0":
+            choosen_media = Music.query.filter(Music.id == mediaid).first()
+            test = jouerMPD(choosen_media.url)
+            print choosen_media.url
+        else:
+            flash("No media selected, please select a radio or music !")
+            print "zobi"
 
-        choosen_media = Music.query.filter(Music.id == mediaid).first()
-
-        print type(choosen_media)
         return redirect(url_for('.dashboard'))
 
     # get in GET the action's param

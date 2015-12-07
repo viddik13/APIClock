@@ -132,7 +132,7 @@ def jouerMPD(path ='http://audio.scdn.arkena.com/11010/franceculture-midfi128.mp
 
 def stopMPD():
     """ Stop MPD """
-    client = MPDClient()               # create client object
+    client = MPDClient()                   # create client object
     try:
         client.connect("localhost", 6600)  # connect to localhost:6600
         client.clear()

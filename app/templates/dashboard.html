@@ -11,11 +11,17 @@
             $("#form1-podcasts").hide();
             $("#form1-musics").hide();
 
+            TEST = "";
+
             $("#form1-media").change(function() {
                 if ($("#form1-media").val() == "1"){
                     $("#form1-radios").show();
                     $("#form1-podcasts").hide();
                     $("#form1-musics").hide();
+
+                    // get selected menu value
+                    //TEST = $('#form1-radios option:selected').val();
+
                 } else if ($("#form1-media").val() == "2") {
                    $("#form1-radios").hide();
                    $("#form1-podcasts").show();
@@ -30,6 +36,29 @@
                    $("#form1-musics").hide();
                 }
             });
+
+            // ***************************************************
+            // TEST JEROME
+            // ***************************************************
+
+            // API_URL = "http://localhost:5000/"+TEST;
+            //
+            // $( "#baseform" ).submit(function( event ) {
+            //     var url = API_URL;
+            //         $.ajax({
+            //             url: url,
+            //             method: "POST",
+            //             success: function() {
+            //                 url = url;
+            //                 console.log(this);
+            //             }
+            //         });
+            // });
+
+            // ***************************************************
+            // END TEST JEROME
+            // ***************************************************
+
         });
         //]]>
     </script>
@@ -48,7 +77,7 @@
 
 <div class="col-md-4">
     <h2>PLAY</h2>
-    <form action="" method="post" class="form" role="form">
+    <form id="baseform" action="" method="post" class="form" role="form">
         {{ form1.hidden_tag() }}
         <div class="form-group" id="form1-medias"><label class="control-label" for="form1-media">{{ form1.media.label }}</label>
             <select class="form-control" id="form1-media" name="form1-media">
