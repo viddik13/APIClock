@@ -133,11 +133,9 @@ def dashboard(action,
 
         if mediaid != "0":
             choosen_media = Music.query.filter(Music.id == mediaid).first()
-            print choosen_media.url
-            choosen_media = choosen_media.url.split('/')
-            choosen_media = choosen_media[-1].encode('utf-8')
+            # Well Format name for mp3 (need update /etc/mpd/.conf)
+            choosen_media = choosen_media.nom.encode('utf-8')
             jouerMPD(choosen_media)
-            print 'GOOD : '+str(choosen_media)
 
         else:
             flash("No media selected, please select a radio or music !")

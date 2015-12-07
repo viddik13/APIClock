@@ -139,8 +139,9 @@ def podcast(action):
         """Download podcast as music type media in music directory."""
         up_dir = current_app.config['UPLOAD_FOLDER']
         urlmusic = request.args.get('urlpodcast')
-
-        name_podcast = 'PODCAST_' + request.args.get('nompodcast').replace(' ', '_') + '.mp3'
+        # Format podcast name
+        name_podcast = request.args.get('nompodcast').replace('/', '_')
+        name_podcast = 'PODCAST_' + name_podcast.replace(' ', '_') + '.mp3'
 
         print "DIR : "+up_dir
         print "NOM : "+name_podcast
