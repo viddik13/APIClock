@@ -15,8 +15,8 @@ from .models import Alarm, Music
 
 # get current environment variable for crontab commands
 # env_path     = os.environ['VIRTUAL_ENV']
-env_path = '/Users/fiot/.virtualenvs/site_apiclock'
-script_path  = os.path.dirname(os.path.realpath(sys.argv[0]))
+env_path = '/home/pi/.virtualenvs/apiclock'
+script_path = os.path.dirname(os.path.realpath(sys.argv[0]))
 cron_command = env_path + '/bin/python ' + script_path + '/mpdplay.py'
 newcron = CronTab(user=True)
 
