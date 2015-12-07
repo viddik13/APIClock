@@ -133,8 +133,12 @@ def dashboard(action,
 
         if mediaid != "0":
             choosen_media = Music.query.filter(Music.id == mediaid).first()
-            jouerMPD(choosen_media.url)
             print choosen_media.url
+            choosen_media = choosen_media.url.split('/')
+            choosen_media = choosen_media[-1].encode('utf-8')
+            jouerMPD(choosen_media)
+            print 'GOOD : '+str(choosen_media)
+
         else:
             flash("No media selected, please select a radio or music !")
 
