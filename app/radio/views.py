@@ -140,9 +140,8 @@ def podcast(action):
         up_dir = current_app.config['UPLOAD_FOLDER']
         urlmusic = request.args.get('urlpodcast')
 
-        print "URL : "+request.args.get('urlpodcast')
+        name_podcast = 'PODCAST_' + request.args.get('nompodcast').replace('"', '_')
 
-        name_podcast = 'PODCAST_' + request.args.get('nompodcast')
         print "DIR : "+up_dir
         print "NOM : "+name_podcast
 
