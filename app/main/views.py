@@ -129,14 +129,14 @@ def dashboard(action,
             mediaid = form1.radio.data
             choosen_media = Music.query.filter(Music.id == mediaid).first()
             # TEST jerome
-            # player1.play(choosenmedia)
+            # player1.play(choosen_media.url)
             jouerMPD(choosen_media.url)
 
         elif form1.radio.data == "0" and form1.music.data != "0":
             mediaid = form1.music.data
             choosen_media = Music.query.filter(Music.id == mediaid).first()
             # TEST jerome
-            # player1.play(choosenmedia)
+            # player1.play(choosen_media.name)
             jouerMPD(choosen_media.name)
 
         elif form1.radio.data == "0" and form1.music.data == "0":
