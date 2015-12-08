@@ -109,6 +109,7 @@ def connectMPD():
         client.update()
         global MPDstatut                  # get and modify MPD statut in navbar
         MPDstatut = client.status()['state']
+        print MPDstatut
     except Exception:
         print "Can't Connect to MPD..."
 
@@ -141,6 +142,7 @@ def stopMPD():
         client.disconnect()  # disconnect from the server
         global MPDstatut     # get and modify MPD statut in navbar
         MPDstatut = client.status()['state']
+        print MPDstatut
     except Exception:
         print "Can't Connect to MPD..."
 

@@ -101,7 +101,7 @@ def dashboard(action,
       musique="http://audio.scdn.arkena.com/11010/franceculture-midfi128.mp3"):
 
     """Get and Print MPD state."""
-    MPDstatut = None
+    MPDstatut = ""
     # TEST jerome import mympd
     # player1 = player()
     # player1.is_playing()
