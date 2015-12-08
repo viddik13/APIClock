@@ -102,17 +102,10 @@ def dashboard(action,
 
     """Get and Print MPD state."""
     MPDstatut = None
-
-    # TEST jerome import mympd
     player1 = player()
     player1.is_playing()
-    # -
-    #connectMPD()
-    # FIN
-
 
     alarms = Alarm.query.filter_by(users=current_user.id).all()
-
     form1 = playerForm(prefix="form1")
     formsnooze = snoozeForm()
 
@@ -143,12 +136,7 @@ def dashboard(action,
             choosen_media = Music.query.filter(Music.id == mediaid).first()
             # Well Format name for mp3 (need update /etc/mpd/.conf)
             choosen_media = choosen_media.name.encode('utf-8')
-
-            # TEST jerome
             player1.play(choosen_media)
-            # -
-            #jouerMPD(choosen_media)
-            # FIN
 
         else:
             flash("No media selected, please select a radio or music !")
@@ -159,40 +147,22 @@ def dashboard(action,
     elif action == '1':
         """ Verify MPD connexion and play the urlmedia in args with volum """
         os.system('amixer sset PCM,0 94%')
-        # TEST jerome
         player1.play()
-        # -
-        #connectMPD()
-        #jouerMPD()
-        # FIN
         return redirect(url_for('.dashboard'))
 
     elif action == '0':
         """ Verify MPD connection and stop and clear MPD playlist """
-        # TEST jerome
         player1.stop()
-        # -
-        #connectMPD()
-        #stopMPD()
-        # FIN
         return redirect(url_for('.dashboard'))
 
     elif action == '2':
         """ Increase volume by 3dB """
-        # TEST jerome
         player1.volup()
-        # -
-        #os.system('amixer sset PCM,0 3dB+')
-        # FIN
         return redirect(url_for('.dashboard'))
 
     elif action == '3':
         """ Decrease volume by 3dB """
-        # TEST jerome
         player1.voldown()
-        # -
-        #os.system('amixer sset PCM,0 3dB-')
-        # FIN
         return redirect(url_for('.dashboard'))
 
     else:
@@ -229,24 +199,24 @@ def edit_profile_admin(id):
     form = EditProfileAdminForm(user=user)
 
     if form.validate_on_submit():
-        user.email     = form.email.data
-        user.username  = form.username.data
+        user.email = form.email.data
+        user.username = form.username.data
         user.confirmed = form.confirmed.data
-        user.role      = Role.query.get(form.role.data)
-        user.name      = form.name.data
-        user.location  = form.location.data
-        user.about_me  = form.about_me.data
+        user.role = Role.query.get(form.role.data)
+        user.name = form.name.data
+        user.location = form.location.data
+        user.about_me = form.about_me.data
         db.session.add(user)
         flash('The profile has been updated.')
         return redirect(url_for('.user', username=user.username))
 
-    form.email.data     = user.email
-    form.username.data  = user.username
+    form.email.data = user.email
+    form.username.data = user.username
     form.confirmed.data = user.confirmed
-    form.role.data      = user.role_id
-    form.name.data      = user.name
-    form.location.data  = user.location
-    form.about_me.data  = user.about_me
+    form.role.data = user.role_id
+    form.name.data = user.name
+    form.location.data = user.location
+    form.about_me.data = user.about_me
     return render_template('edit_profile.html', form=form, user=user)
 
 

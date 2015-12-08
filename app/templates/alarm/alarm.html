@@ -96,12 +96,8 @@ http://tympanus.net/codrops/2013/05/21/natural-language-form-with-custom-input-e
     <form action="" method="post" class="form" role="form">
         {{ form.hidden_tag() }}
 
-        {{ wtf.form_field(form.name) }}
-        {{ wtf.form_field(form.state) }}
         {{ wtf.form_field(form.heures) }}
         {{ wtf.form_field(form.minutes) }}
-        {{ wtf.form_field(form.repetition) }}
-        {{ wtf.form_field(form.jours) }}
 
         <!-- <div class="form-group" id="form1-medias"><label class="control-label" for="form1-media">  form.media.label  </label>
             <select class="form-control" id="form1-media" name="form1-media">

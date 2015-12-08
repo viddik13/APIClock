@@ -81,12 +81,11 @@ class player():
 
     def is_playing(self):
         """Verify player playing and update globale MPDstatut."""
-        status = self.status()
-        #if self.status()['state'] == 'stop':
-        #    MPDstatut = None
-        #else:
-        #    MPDstatut = status['state']
-        #return MPDstatut
+        # if self.status()['state'] != None:
+        #     MPDstatut = self.status()['state']
+        # else:
+        #     MPDstatut = None
+        # return MPDstatut
 
 
 def main():
