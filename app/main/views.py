@@ -103,10 +103,10 @@ def dashboard(action,
     """Get and Print MPD state."""
     MPDstatut = None
     # TEST jerome import mympd
-    # player1 = player()
-    # player1.is_playing()
+    player1 = player()
+    #player1.is_playing()
     # -
-    connectMPD()
+    #connectMPD()
     # FIN
 
     alarms = Alarm.query.filter_by(users=current_user.id).all()
@@ -129,15 +129,15 @@ def dashboard(action,
             mediaid = form1.radio.data
             choosen_media = Music.query.filter(Music.id == mediaid).first()
             # TEST jerome
-            # player1.play(choosen_media.url)
-            jouerMPD(choosen_media.url)
+            player1.play(choosen_media.url)
+            #jouerMPD(choosen_media.url)
 
         elif form1.radio.data == "0" and form1.music.data != "0":
             mediaid = form1.music.data
             choosen_media = Music.query.filter(Music.id == mediaid).first()
             # TEST jerome
-            # player1.play(choosen_media.name)
-            jouerMPD(choosen_media.name)
+            player1.play(choosen_media.name)
+            #jouerMPD(choosen_media.name)
 
         elif form1.radio.data == "0" and form1.music.data == "0":
             mediaid = "0"
@@ -152,40 +152,40 @@ def dashboard(action,
         """ Verify MPD connexion and play the urlmedia in args with volum """
         os.system('amixer sset PCM,0 94%')
         # TEST jerome
-        # player1.play()
+        player1.play()
         # -
-        connectMPD()
-        jouerMPD()
+        #connectMPD()
+        #jouerMPD()
         # FIN
         return redirect(url_for('.dashboard', MPDstatut=MPDstatut))
 
     elif action == '0':
         """ Verify MPD connection and stop and clear MPD playlist """
         # TEST jerome
-        # player1.stop()
+        player1.stop()
         # -
-        connectMPD()
-        stopMPD()
+        #connectMPD()
+        #stopMPD()
         # FIN
         return redirect(url_for('.dashboard', MPDstatut=MPDstatut))
 
     elif action == '2':
         """ Increase volume by 3dB """
         # TEST jerome
-        # player1.volup()
+        player1.volup()
         # -
-        os.system('amixer sset PCM,0 3dB+')
+        #os.system('amixer sset PCM,0 3dB+')
         # FIN
-        return redirect(url_for('.dashboard'))
+        return redirect(url_for('.dashboard', MPDstatut=MPDstatut))
 
     elif action == '3':
         """ Decrease volume by 3dB """
         # TEST jerome
-        # player1.voldown()
+        player1.voldown()
         # -
-        os.system('amixer sset PCM,0 3dB-')
+        #os.system('amixer sset PCM,0 3dB-')
         # FIN
-        return redirect(url_for('.dashboard'))
+        return redirect(url_for('.dashboard', MPDstatut=MPDstatut))
 
     else:
         return render_template('dashboard.html', form1=form1,
