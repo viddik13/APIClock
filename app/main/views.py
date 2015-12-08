@@ -101,7 +101,7 @@ def dashboard(action,
       musique="http://audio.scdn.arkena.com/11010/franceculture-midfi128.mp3"):
 
     """Get and Print MPD state."""
-    MPDstatut = ""
+    MPDstatut = None
     # TEST jerome import mympd
     # player1 = player()
     # player1.is_playing()
@@ -128,23 +128,22 @@ def dashboard(action,
         if form1.radio.data != "0":
             mediaid = form1.radio.data
             choosen_media = Music.query.filter(Music.id == mediaid).first()
-            choosenmedia = choosen_media.url
+            # TEST jerome
+            # player1.play(choosenmedia)
+            jouerMPD(choosen_media.url)
 
         elif form1.radio.data == "0" and form1.music.data != "0":
             mediaid = form1.music.data
             choosen_media = Music.query.filter(Music.id == mediaid).first()
-            choosenmedia = choosen_media.name
+            # TEST jerome
+            # player1.play(choosenmedia)
+            jouerMPD(choosen_media.name)
 
         elif form1.radio.data == "0" and form1.music.data == "0":
             mediaid = "0"
+            flash("No media selected, please select a radio or music !")
         else:
             flash("No media selected, please select a radio or music !")
-
-        # TEST jerome
-        # player1.play(choosenmedia)
-        # -
-        jouerMPD(choosenmedia)
-        # FIN
 
         return redirect(url_for('.dashboard', MPDstatut=MPDstatut))
 
