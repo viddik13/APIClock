@@ -107,9 +107,6 @@ def connectMPD():
     try:
         client.connect("localhost", 6600)  # connect to localhost:6600
         client.update()
-        global MPDstatut                  # get and modify MPD statut in navbar
-        MPDstatut = client.status()['state']
-        print MPDstatut
     except Exception:
         print "Can't Connect to MPD..."
 
@@ -127,6 +124,7 @@ def jouerMPD(path ='http://audio.scdn.arkena.com/11010/franceculture-midfi128.mp
         client.play()
         global MPDstatut            # get and modify MPD statut in navbar
         MPDstatut = client.status()['state']
+        print MPDstatut
     except Exception:
         print "Can't Connect to MPD..."
 
