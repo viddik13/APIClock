@@ -111,8 +111,6 @@ def connectMPD():
         MPDstatut = client.status()['state']
     except Exception:
         print "Can't Connect to MPD..."
-        global MPDstatut
-        MPDstatut = None
 
 
 def jouerMPD(path ='http://audio.scdn.arkena.com/11010/franceculture-midfi128.mp3'):
@@ -126,8 +124,8 @@ def jouerMPD(path ='http://audio.scdn.arkena.com/11010/franceculture-midfi128.mp
         client.clear()
         client.add(path)
         client.play()
-        #global test             # get and modify MPD statut in navbar
-        #test = client.status()['state']
+        global MPDstatut            # get and modify MPD statut in navbar
+        MPDstatut = client.status()['state']
     except Exception:
         print "Can't Connect to MPD..."
 
@@ -145,8 +143,6 @@ def stopMPD():
         MPDstatut = client.status()['state']
     except Exception:
         print "Can't Connect to MPD..."
-        global MPDstatut
-        MPDstatut = None
 
 
 def snooze(radiosnooze, minutessnooze):
