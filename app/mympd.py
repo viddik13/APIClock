@@ -26,13 +26,13 @@ class player():
         """Clear player playlist."""
         self.client.clear()
 
-    def play(self, media='http://audio.scdn.arkena.com/11010/franceculture-midfi128.mp3'):
+    def play(self,
+        media="http://audio.scdn.arkena.com/11010/franceculture-midfi128.mp3"):
         """Start player with media(url) arg."""
         self.client.clear()
-        if media:
-            self.client.add(media)
-            self.client.setvol(60)
-            self.client.play()
+        self.client.add(media)
+        self.client.setvol(60)
+        self.client.play()
 
     def podlist(self, media):
         """Get podcast infos(parsed)."""
