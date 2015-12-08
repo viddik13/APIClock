@@ -127,28 +127,26 @@ def dashboard(action,
 
         if form1.radio.data != "0":
             mediaid = form1.radio.data
+            choosen_media = Music.query.filter(Music.id == mediaid).first()
+            choosenmedia = choosen_media.url
             print "RADIO // MEDIA_ID : "+mediaid
+
         elif form1.radio.data == "0" and form1.music.data != "0":
             mediaid = form1.music.data
+            choosen_media = Music.query.filter(Music.id == mediaid).first()
+            choosenmedia = choosen_media.name.encode('utf-8')
             print "MUSIC // MEDIA_ID : "+mediaid
+
         elif form1.radio.data == "0" and form1.music.data == "0":
             mediaid = "0"
         else:
-            pass
-
-        if mediaid != "0":
-            choosen_media = Music.query.filter(Music.id == mediaid).first()
-            # Well Format name for mp3 (need update /etc/mpd/.conf)
-            #choosen_media1 = choosen_media.name.encode('utf-8')
-
-            # TEST jerome
-            #player1.play(media=choosen_media.url)
-            # -
-            jouerMPD(choosen_media.url)
-            # FIN
-
-        else:
             flash("No media selected, please select a radio or music !")
+
+        # TEST jerome
+        # player1.play(media=choosen_media.url)
+        # -
+        jouerMPD(choosenmedia)
+        # FIN
 
         return redirect(url_for('.dashboard'))
 

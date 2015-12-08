@@ -124,8 +124,8 @@ def jouerMPD(path ='http://audio.scdn.arkena.com/11010/franceculture-midfi128.mp
         client.clear()
         client.add(path)
         client.play()
-        global test             # get and modify MPD statut in navbar
-        test = client.status()['state']
+        #global test             # get and modify MPD statut in navbar
+        #test = client.status()['state']
     except Exception:
         print "Can't Connect to MPD..."
 
