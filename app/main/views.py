@@ -148,7 +148,7 @@ def dashboard(action,
         jouerMPD(choosenmedia)
         # FIN
 
-        return redirect(url_for('.dashboard'))
+        return redirect(url_for('.dashboard', test=MPDstatut))
 
     # get in GET the action's param
     elif action == '1':
@@ -160,7 +160,7 @@ def dashboard(action,
         connectMPD()
         jouerMPD()
         # FIN
-        return redirect(url_for('.dashboard'))
+        return redirect(url_for('.dashboard', test=MPDstatut))
 
     elif action == '0':
         """ Verify MPD connection and stop and clear MPD playlist """
@@ -170,7 +170,7 @@ def dashboard(action,
         connectMPD()
         stopMPD()
         # FIN
-        return redirect(url_for('.dashboard'))
+        return redirect(url_for('.dashboard', test=MPDstatut))
 
     elif action == '2':
         """ Increase volume by 3dB """
