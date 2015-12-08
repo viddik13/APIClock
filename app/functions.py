@@ -107,6 +107,8 @@ def connectMPD():
     try:
         client.connect("localhost", 6600)  # connect to localhost:6600
         client.update()
+        global MPDstatut            # get and modify MPD statut in navbar
+        MPDstatut = client.status()['state']
     except Exception:
         print "Can't Connect to MPD..."
 
