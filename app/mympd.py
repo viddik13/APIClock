@@ -19,6 +19,7 @@ class player():
         self.client.idletimeout = None
         try:
             self.client.connect("localhost", 6600)
+            self.client.update()
         except Exception:
             print "Can't Connect to MPD..."
 
@@ -81,11 +82,11 @@ class player():
 
     def is_playing(self):
         """Verify player playing and update globale MPDstatut."""
-        # if self.status()['state'] != None:
-        #     MPDstatut = self.status()['state']
-        # else:
-        #     MPDstatut = None
-        # return MPDstatut
+        if self.status()['state'] != None:
+            MPDstatut = self.status()['state']
+        else:
+            MPDstatut = None
+        return MPDstatut
 
 
 def main():
