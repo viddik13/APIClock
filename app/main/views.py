@@ -134,7 +134,7 @@ def dashboard(action,
         elif form1.radio.data == "0" and form1.music.data != "0":
             mediaid = form1.music.data
             choosen_media = Music.query.filter(Music.id == mediaid).first()
-            choosenmedia = choosen_media.name.encode('utf-8')
+            choosenmedia = choosen_media.name
             print "MUSIC // MEDIA_ID : "+mediaid
 
         elif form1.radio.data == "0" and form1.music.data == "0":

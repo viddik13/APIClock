@@ -104,6 +104,7 @@ def connectMPD():
     client = MPDClient()       # create client object
     client.timeout = 10        # network timeout in seconds default: None
     client.idletimeout = None  # timeout for fetching result of idle comm.
+    client.update()
     try:
         client.connect("localhost", 6600)  # connect to localhost:6600
         global MPDstatut                  # get and modify MPD statut in navbar
@@ -119,6 +120,7 @@ def jouerMPD(path ='http://audio.scdn.arkena.com/11010/franceculture-midfi128.mp
     client = MPDClient()    # create client object
     client.timeout = 10     # network timeout in seconds
     client.idletimeout = None
+    client.update()
     try:
         client.connect("localhost", 6600)  # connect to localhost:6600
         client.clear()
