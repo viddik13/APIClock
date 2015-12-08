@@ -17,13 +17,16 @@ class player():
         self.client = MPDClient()
         self.client.timeout = 10
         self.client.idletimeout = None
-        self.client.connect("localhost", 6600)
+        try:
+            self.client.connect("localhost", 6600)
+        except Exception:
+            print "Can't Connect to MPD..."
 
     def clear(self):
         """Clear player playlist."""
         self.client.clear()
 
-    def play(self, media):
+    def play(self, media='http://audio.scdn.arkena.com/11010/franceculture-midfi128.mp3'):
         """Start player with media(url) arg."""
         self.client.clear()
         if media:
@@ -77,12 +80,13 @@ class player():
         return monstatus, maplaylist
 
     def is_playing(self):
-        """Verify player playing."""
+        """Verify player playing and update globale MPDstatut."""
         status = self.status()
-        if status['state'] == 'stop':
-            return False
-        else:
-            return True
+        #if self.status()['state'] == 'stop':
+        #    MPDstatut = None
+        #else:
+        #    MPDstatut = status['state']
+        #return MPDstatut
 
 
 def main():
@@ -91,7 +95,7 @@ def main():
         description="This script play a given media on the mpd (local) server")
     parser.add_argument("-c",
         choices=['play', 'stop', 'status', 'volup', 'voldown', 'pod'],
-                 required=True)
+        required=True)
     parser.add_argument("-u", help="url to play")
 
     args = parser.parse_args()
