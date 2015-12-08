@@ -129,13 +129,11 @@ def dashboard(action,
             mediaid = form1.radio.data
             choosen_media = Music.query.filter(Music.id == mediaid).first()
             choosenmedia = choosen_media.url
-            print "RADIO // MEDIA_ID : "+mediaid
 
         elif form1.radio.data == "0" and form1.music.data != "0":
             mediaid = form1.music.data
             choosen_media = Music.query.filter(Music.id == mediaid).first()
             choosenmedia = choosen_media.name
-            print "MUSIC // MEDIA_ID : "+mediaid
 
         elif form1.radio.data == "0" and form1.music.data == "0":
             mediaid = "0"
@@ -143,12 +141,12 @@ def dashboard(action,
             flash("No media selected, please select a radio or music !")
 
         # TEST jerome
-        # player1.play(media=choosen_media.url)
+        # player1.play(choosenmedia)
         # -
         jouerMPD(choosenmedia)
         # FIN
 
-        return redirect(url_for('.dashboard', test=MPDstatut))
+        return redirect(url_for('.dashboard', MPDstatut=MPDstatut))
 
     # get in GET the action's param
     elif action == '1':
@@ -160,7 +158,7 @@ def dashboard(action,
         connectMPD()
         jouerMPD()
         # FIN
-        return redirect(url_for('.dashboard', test=MPDstatut))
+        return redirect(url_for('.dashboard', MPDstatut=MPDstatut))
 
     elif action == '0':
         """ Verify MPD connection and stop and clear MPD playlist """
@@ -170,7 +168,7 @@ def dashboard(action,
         connectMPD()
         stopMPD()
         # FIN
-        return redirect(url_for('.dashboard', test=MPDstatut))
+        return redirect(url_for('.dashboard', MPDstatut=MPDstatut))
 
     elif action == '2':
         """ Increase volume by 3dB """
@@ -193,7 +191,7 @@ def dashboard(action,
     else:
         return render_template('dashboard.html', form1=form1,
                                formsnooze=formsnooze, alarms=alarms,
-                               test=MPDstatut)
+                               MPDstatut=MPDstatut)
 
 
 @main.route('/edit-profile', methods=['GET', 'POST'])
