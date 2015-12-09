@@ -51,6 +51,8 @@ class player():
         if nvol > 100:
             nvol = 100
         self.client.setvol(nvol)
+        print int(status['volume'])
+        print "Volume : %d" % nvol
 
     def voldown(self, n=10):
         """Set player volume down."""
@@ -60,6 +62,7 @@ class player():
         if nvol < 0:
             nvol = 0
         self.client.setvol(nvol)
+        print int(status['volume'])
         print "Volume : %d" % nvol
 
     def status(self):
@@ -78,12 +81,13 @@ class player():
                 monstatus[key] = value.decode('utf-8')
         except:
             pass
-        return monstatus, maplaylist
+        return monstatus
 
     def is_playing(self):
         """Verify player playing and update globale MPDstatut."""
-        if self.status()['state'] != None:
-            MPDstatut = self.status()['state']
+        stat = self.status()
+        if stat['state'] != None:
+            MPDstatut = stat['state']
         else:
             MPDstatut = None
         return MPDstatut

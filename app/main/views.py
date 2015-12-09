@@ -20,7 +20,7 @@ from ..login_nav import LoginFormNav
 # ========================================
 # ============= PUBLIC PAGES  ============
 # ========================================
-
+mpd_player = player()
 
 @main.route('/contact', methods=['GET', 'POST'])
 def contact():
@@ -102,19 +102,14 @@ def dashboard(action,
 
     """Get and Print MPD state."""
     MPDstatut = None
-    # TEST jerome import mympd
-    #player1 = player()
-    #player1.is_playing()
-    # -
-    connectMPD()
-    # FIN
+    MPDstatut = mpd_player.is_playing()
 
     alarms = Alarm.query.filter_by(users=current_user.id).all()
     form1 = playerForm(prefix="form1")
     formsnooze = snoozeForm()
 
     if formsnooze.submitsnooze.data:
-        """ Get radio by id and return url for jouerMPD()"""
+        """Get radio by id and return url."""
         radiosnooze = formsnooze.radiosnooze.data
         radiosnooze = Music.query.filter(Music.id == radiosnooze).first()
         radiosnooze = radiosnooze.url
@@ -123,21 +118,17 @@ def dashboard(action,
         return redirect(url_for('.dashboard'))
 
     elif form1.submit.data:
-        """ Depending on media type get id and then request for url """
+        """Depending on media type get id and then request for url."""
 
         if form1.radio.data != "0":
             mediaid = form1.radio.data
             choosen_media = Music.query.filter(Music.id == mediaid).first()
-            # TEST jerome
-            #player1.play(choosen_media.url)
-            jouerMPD(choosen_media.url)
+            mpd_player.play(choosen_media.url)
 
         elif form1.radio.data == "0" and form1.music.data != "0":
             mediaid = form1.music.data
             choosen_media = Music.query.filter(Music.id == mediaid).first()
-            # TEST jerome
-            #player1.play(choosen_media.name)
-            jouerMPD(choosen_media.name)
+            mpd_player.play(choosen_media.name.encode('utf-8'))
 
         elif form1.radio.data == "0" and form1.music.data == "0":
             mediaid = "0"
@@ -149,42 +140,23 @@ def dashboard(action,
 
     # get in GET the action's param
     elif action == '1':
-        """ Verify MPD connexion and play the urlmedia in args with volum """
-        os.system('amixer sset PCM,0 94%')
-        # TEST jerome
-        #player1.play()
-        # -
-        connectMPD()
-        jouerMPD()
-        # FIN
+        """Play the urlmedia in args with volum."""
+        mpd_player.play()
         return redirect(url_for('.dashboard', MPDstatut=MPDstatut))
 
     elif action == '0':
-        """ Verify MPD connection and stop and clear MPD playlist """
-        # TEST jerome
-        #player1.stop()
-        # -
-        connectMPD()
-        stopMPD()
-        # FIN
+        """Stop and clear MPD playlist."""
+        mpd_player.stop()
         return redirect(url_for('.dashboard', MPDstatut=MPDstatut))
 
     elif action == '2':
-        """ Increase volume by 3dB """
-        # TEST jerome
-        #player1.volup()
-        # -
-        os.system('amixer sset PCM,0 3dB+')
-        # FIN
+        """Increase volume."""
+        mpd_player.volup()
         return redirect(url_for('.dashboard', MPDstatut=MPDstatut))
 
     elif action == '3':
-        """ Decrease volume by 3dB """
-        # TEST jerome
-        #player1.voldown()
-        # -
-        os.system('amixer sset PCM,0 3dB-')
-        # FIN
+        """Decrease volume."""
+        mpd_player.voldown()
         return redirect(url_for('.dashboard', MPDstatut=MPDstatut))
 
     else:
