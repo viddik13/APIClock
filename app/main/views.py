@@ -42,7 +42,7 @@ def contact():
                                             form.email.data,
                                             form.message.data)
             send_email(current_user.email,
-                       'APICLOCK MAIL from '+form.email.data,
+                       'APICLOCK MAIL from ' + form.email.data,
                        'auth/email/contact',
                        msg.body)
             return render_template('public/contact.html', success=True)
@@ -101,8 +101,8 @@ def dashboard(action,
       musique="http://audio.scdn.arkena.com/11010/franceculture-midfi128.mp3"):
 
     """Get and Print MPD state."""
-    MPDstatut = None
     MPDstatut = mpd_player.is_playing()
+    print MPDstatut
 
     alarms = Alarm.query.filter_by(users=current_user.id).all()
     form1 = playerForm(prefix="form1")
@@ -136,28 +136,28 @@ def dashboard(action,
         else:
             flash("No media selected, please select a radio or music !")
 
-        return redirect(url_for('.dashboard', MPDstatut=MPDstatut))
+        return redirect(url_for('.dashboard'))
 
     # get in GET the action's param
     elif action == '1':
         """Play the urlmedia in args with volum."""
         mpd_player.play()
-        return redirect(url_for('.dashboard', MPDstatut=MPDstatut))
+        return redirect(url_for('.dashboard'))
 
     elif action == '0':
         """Stop and clear MPD playlist."""
         mpd_player.stop()
-        return redirect(url_for('.dashboard', MPDstatut=MPDstatut))
+        return redirect(url_for('.dashboard'))
 
     elif action == '2':
         """Increase volume."""
         mpd_player.volup()
-        return redirect(url_for('.dashboard', MPDstatut=MPDstatut))
+        return redirect(url_for('.dashboard'))
 
     elif action == '3':
         """Decrease volume."""
         mpd_player.voldown()
-        return redirect(url_for('.dashboard', MPDstatut=MPDstatut))
+        return redirect(url_for('.dashboard'))
 
     else:
         return render_template('dashboard.html', form1=form1,

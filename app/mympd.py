@@ -32,7 +32,7 @@ class player():
         """Start player with media(url) arg."""
         self.client.clear()
         self.client.add(media)
-        self.client.setvol(60)
+        self.client.setvol(90)
         self.client.play()
 
     def podlist(self, media):
@@ -44,7 +44,7 @@ class player():
         """Stop player."""
         self.client.stop()
 
-    def volup(self, n=10):
+    def volup(self, n=5):
         """Set player volume up."""
         status = self.client.status()
         nvol = int(status['volume']) + n
@@ -54,7 +54,7 @@ class player():
         print int(status['volume'])
         print "Volume : %d" % nvol
 
-    def voldown(self, n=10):
+    def voldown(self, n=5):
         """Set player volume down."""
         status = self.client.status()
         volume = status['volume']
@@ -86,6 +86,7 @@ class player():
     def is_playing(self):
         """Verify player playing and update globale MPDstatut."""
         stat = self.status()
+        global MPDstatut
         if stat['state'] != None:
             MPDstatut = stat['state']
         else:
