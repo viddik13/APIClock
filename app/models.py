@@ -55,22 +55,17 @@ class Role(db.Model):
     @staticmethod
     def insert_roles():
         roles = {
-            'User': (Permission.FOLLOW |
-                     Permission.COMMENT |
-                     Permission.WRITE_ARTICLES, True),
-            'Moderator':    (Permission.FOLLOW |
-                             Permission.COMMENT |
-                             Permission.WRITE_ARTICLES |
-                             Permission.MODERATE_COMMENTS, False),
-            'Visitor':      (Permission.READ_MEDIAS, True),
-            'Administrator':(0xff, False)
+            'User': (Permission.MANAGE_ALARMS | Permission.MANAGE_MEDIAS, True),
+            'Moderator': (Permission.ADMINISTER, True),
+            'Visitor': (Permission.READ_MEDIAS, True),
+            'Administrator': (0xff, False)
         }
         for r in roles:
             role = Role.query.filter_by(name=r).first()
             if role is None:
                 role = Role(name=r)
             role.permissions = roles[r][0]
-            role.default     = roles[r][1]
+            role.default = roles[r][1]
             db.session.add(role)
         db.session.commit()
 
@@ -176,7 +171,7 @@ class User(UserMixin, db.Model):
 
     def is_administrator(self):
         return self.can(Permission.ADMINISTER)
-        
+
     def is_visitor(self):
         return self.can(Permission.VISITOR)
 

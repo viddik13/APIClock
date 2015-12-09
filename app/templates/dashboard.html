@@ -154,7 +154,8 @@
 
 <div class="col-md-4">
     <h2>ALARMS</h2>
-    Nous sommes {{ moment().format('dddd(E) - h:m') }}<br/>
+    <!-- Nous sommes  moment().format('dddd(E) - h:m') <br/> -->
+    Nous sommes le {{ moment().format('dddd D MMMM YYYY, H:mm:ss') }}<br/>
     <br/>
     {% for alarm in alarms %}
         {{alarm.namealarme}}  //  {{alarm.days}} - {{alarm.startdate}} <br/>

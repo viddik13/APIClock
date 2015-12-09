@@ -11,6 +11,7 @@ from flask.ext.login import current_user
 
 from . import db
 from .models import Alarm, Music
+from mympd import player
 
 
 # get current environment variable for crontab commands
@@ -27,14 +28,14 @@ class Snooze(Thread):
     def __init__(self, radiosnooze, minutessnooze):
         Thread.__init__(self)
         self.radio = radiosnooze
-        self.duree = minutessnooze*60
-        client = MPDClient()
+        self.duree = minutessnooze * 60
+        self.client = player()
 
     def run(self):
         """start jouerMPD stop during minutesnooze then stop MPD."""
-        jouerMPD(self.radio)
+        self.client.play(self.radio)
         time.sleep(self.duree)
-        stopMPD()
+        self.client.stop()
 
 
 def addcronenvoi(monalarme):
@@ -70,7 +71,7 @@ def statealarm(idalarm):
     Find the existing alarm by id in crontab comment
     and activate or deactivate it.
     """
-    actionalarm = newcron.find_comment('Alarme ID:'+str(idalarm))
+    actionalarm = newcron.find_comment('Alarme ID:' + str(idalarm))
     actionalarm = next(actionalarm)
     alarms = Alarm.query.filter(Alarm.id == idalarm).first()
     if alarms.state == 1:

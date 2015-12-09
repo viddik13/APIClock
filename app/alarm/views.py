@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for, flash
+from flask import render_template, redirect, url_for, flash, request
 from flask.ext.login import login_required, current_user
 from sqlalchemy.sql import and_
 import datetime
@@ -28,6 +28,12 @@ def index(action, idr):
     monalarme = {}
 
     if form.submit.data:
+        # debugg
+        print 'Heures : '+str(form.heures.data)
+        print 'Minutes : '+str(form.minutes.data)
+        testradio = form.Radio.data
+        print 'Radio : '+str(testradio.id)
+
         monalarme['nom'] = form.name.data
         if form.state.data:
             monalarme['state'] = '1'
