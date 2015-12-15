@@ -65,8 +65,18 @@ def index(action, radioe):
         radiodel = Music.query.filter(Music.id == radioe).first()
         db.session.delete(radiodel)
         db.session.commit()
-        # if radiodel.music_type == 3:
-        #     os.remove(current_app.config['UPLOAD_FOLDER']+name)
+
+        if str(radiodel.music_type) == '3':
+            try:
+                app = current_app._get_current_object()
+                os.remove(os.path.join(app.config['UPLOAD_FOLDER'], radiodel.name))
+                #musics = Music.query.filter(and_(Music.music_type == '3',
+                #                            Music.users == current_user.id)).all()
+                flash('All right, file deleted.')
+                return redirect(url_for('.music'))
+            except:
+                flash('Something went wrong, file not deleted...')
+
         flash('Delete successful !')
         return redirect(url_for('.index'))
 
@@ -170,14 +180,12 @@ def podcast(action):
             app = current_app._get_current_object()
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
-            test = os.path.join(app.config['ADMIN_LIST'], filename)
-            print test
-
+            #test = os.path.join(app.config['ADMIN_LIST'], filename)
             # TO ADD : check the disk space
             addmusic2 = Music(
                     name=filename,
                     #url=os.path.join(app.config['UPLOAD_FOLDER'], filename),
-                    url=test,
+                    url=os.path.join(app.config['UPLOAD_FOLDER'], filename),
                     music_type=3,
                     users=current_user.id)
             db.session.add(addmusic2)
