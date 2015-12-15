@@ -2,6 +2,7 @@ from flask import render_template, redirect, url_for, flash, request
 from flask.ext.login import login_required, current_user
 from sqlalchemy.sql import and_
 import datetime
+import moment
 
 from . import alarm
 from .forms import addAlarmForm, addAlarmForm2
@@ -19,43 +20,39 @@ from ..decorators import admin_required
 def index(action, idr):
     """Index."""
     alarms = Alarm.query.filter(Alarm.users == current_user.id).all()
-    radios = Music.query.filter(and_(
-        Music.music_type == '1',
-        Music.users == current_user.id)).all()
 
     form = addAlarmForm(state=True)
     form2 = addAlarmForm2(state=True)
     monalarme = {}
 
     if form.submit.data:
-        # debugg
-        print 'Heures : '+str(form.heures.data)
-        print 'Minutes : '+str(form.minutes.data)
-        testradio = form.Radio.data
-        print 'Radio : '+str(testradio.id)
 
-        monalarme['nom'] = form.name.data
-        if form.state.data:
-            monalarme['state'] = '1'
-        else:
-            monalarme['state'] = '0'
-
-        # monalarme['duration'] = form.duration.data
-        monalarme['heure'] = form.heures.data
-        monalarme['minute'] = form.minutes.data
-        monalarme['repetition'] = form.repetition.data
-        monalarme['jours'] = form.jours.data
-        monalarme['path'] = form.Radio.data.url
-
+        # Fast Form
+        # ---------------------------------------------------
         lastid = alarms[-1].id
         if lastid is None:
             monalarme['id'] = 1
         else:
             monalarme['id'] = lastid + 1
+        monalarme['heure'] = form.heures.data
+        monalarme['minute'] = form.minutes.data
+        monalarme['path'] = form.Radio.data.url
 
-        # format data hour:minute in datetime python
-        timepython = str(monalarme['heure']) + ':' + str(monalarme['minute'])
-        timepython = datetime.datetime.strptime(timepython, "%H:%M")
+        # Complete Form
+        # ---------------------------------------------------
+        if form.repetition.data:
+            monalarme['repetition'] = form.repetition.data
+        # else:
+        #     monalarme['repetition'] = 0
+        if form.jours.data:
+            monalarme['jours'] = form.jours.data
+        else:  # tomorrow (if date > now --> today else tomorow)
+            monalarme['jours'] = moment.now().add(days=1).format("d")
+
+        if form.name.data:
+            monalarme['nom'] = form.name.data
+        else:
+            monalarme['nom'] = 'No-name' + str(monalarme['id'])
 
         # setting up crontab
         result = addcronenvoi(monalarme)
@@ -64,8 +61,6 @@ def index(action, idr):
         if result == 0:
             alarme = Alarm(
                     namealarme=monalarme['nom'],
-                    state=monalarme['state'],
-                    # duration=timepython,
                     days=",".join([str(x) for x in monalarme['jours']]),
                     startdate=str(monalarme['heure']) + ':' +
                     str(monalarme['minute']),
@@ -74,69 +69,13 @@ def index(action, idr):
             db.session.add(alarme)
             try:
                 db.session.commit()
-                flash('Your alarm has been programed.'+monalarme['duration'])
-            except:
-                flash('Error adding your alarm in database.')
+                flash('Your alarm has been programed.')
+            except Exception, e:
+                errorstring = str(e)
+                flash('Error adding your alarm in database. ' + errorstring)
         else:
             flash('Error adding your alarm.')
         return redirect(url_for('.index'))
-
-    # ******************************************************************
-    # ******************************************************************
-
-    elif form2.submit.data:
-        print 'test'
-        monalarme['nom'] = form2.name.data
-        if form2.state.data:
-            monalarme['state'] = '1'
-        else:
-            monalarme['state'] = '0'
-        # monalarme['duration'] = form.duration.data
-        monalarme['heure'] = form2.heures.data
-        print monalarme['heure']
-        monalarme['minute'] = form2.minutes.data
-        print monalarme['minute']
-        monalarme['repetition'] = form2.repetition.data
-        monalarme['jours'] = form2.jours.data
-        monalarme['path'] = form2.radio.data
-
-        flash(monalarme['path'])
-        return redirect(url_for('.index'))
-        # lastid = alarms[-1].id
-
-        # if lastid is None:
-            # monalarme['id'] = 1
-        # else:
-            # monalarme['id'] = lastid + 1
-
-        # #format data hour:minute in datetime python
-        # timepython = str(monalarme['heure'])+ ':' + str(monalarme['minute'])
-        # timepython = datetime.datetime.strptime(timepython, "%H:%M")
-
-        # ## setting up crontab
-        # result = addcronenvoi(monalarme)
-
-        # # Add alarm in database
-        # if result == 0:
-            # alarme = Alarm(
-                    # namealarme=monalarme['nom'],
-                    # state=monalarme['state'],
-                    # #duration=timepython,
-                    # days=",".join([str(x) for x in monalarme['jours']]),
-                    # startdate=str(monalarme['heure'])
-                        # + ':' + str(monalarme['minute']),
-                    # frequence='dows',
-                    # users=current_user.id)
-            # db.session.add(alarme)
-            # try:
-                # db.session.commit()
-                # flash('Your alarm has been programed.'+monalarme['duration'])
-            # except:
-                # flash('Error adding your alarm in database.')
-        # else:
-            # flash('Error adding your alarm.')
-        # return redirect(url_for('.index'))
-
 # ******************************************************************
 # ******************************************************************
 
@@ -153,15 +92,15 @@ def index(action, idr):
         # edit alarm by id (idr)
         alarmeedit = Alarm.query.filter(Alarm.id == idr).first()
         form = addAlarmForm(obj=alarmeedit)
-        return render_template("alarm/alarm.html", form=form, form2=form2,
-                               user=current_user, alarms=alarms, radios=radios)
+        return render_template("alarm/alarm.html", form=form,
+                               user=current_user, alarms=alarms)
 
     elif action == '3':
         # Call statealarm function which activate / deactivate alarm
         statealarm(idr)
-        return render_template("alarm/alarm.html", form=form, form2=form2,
-                               user=current_user, alarms=alarms, radios=radios)
+        return render_template("alarm/alarm.html", form=form,
+                               user=current_user, alarms=alarms)
 
     else:
-        return render_template("alarm/alarm.html", form=form, form2=form2,
-                               user=current_user, alarms=alarms, radios=radios)
+        return render_template("alarm/alarm.html", form=form,
+                               user=current_user, alarms=alarms)

@@ -2,6 +2,7 @@ import os
 import sys
 import time
 import feedparser
+import moment
 
 from crontab import CronTab
 from mpd import MPDClient
@@ -44,6 +45,39 @@ def addcronenvoi(monalarme):
 
     job = newcron.new(command=cron_command + ' ' + monalarme['path'],
                       comment='Alarme ID:' + str(monalarme['id']))
+
+    # # Frequence = week or day
+    # if int(monalarme['repetition']) == 2:
+    #     jours = ",".join(map(str, monalarme['jours']))
+    # elif int(monalarme['repetition']) == 1:
+    #     jours = "'*'"
+    # else:
+    #     pass
+    #
+    # # Frequence = Month
+    # if int(monalarme['repetition']) == 3:
+    #     daysofmonth = str(moment.now().format("D"))
+    # else:
+    #     daysofmonth = "'*'"
+    #     month = "'*'"
+    #     jours = "'*'"
+    #
+    # # Frequence = Year
+    # if int(monalarme['repetition']) == 4:
+    #     daysofmonth = str(moment.now().format("D"))
+    #     month = str(moment.now().format("M"))
+    # else:
+    #     month = "'*'"
+    #     daysofmonth = "'*'"
+    #     jours = "'*'"
+    #
+    # job.setall(
+    #     monalarme['minute'],
+    #     "{}-{}".format(monalarme['heure'], alarmduration),
+    #     # str(monalarme['heure'])+'-'+str(alarmduration),
+    #     daysofmonth,
+    #     month,
+    #     jours)
     jours = ",".join(map(str, monalarme['jours']))
     job.setall(
         monalarme['minute'],
@@ -52,6 +86,10 @@ def addcronenvoi(monalarme):
         '*',
         '*',
         jours)
+
+    # FREQUENCE
+    # ('0', 'None')('1', 'Days'), ('2', 'Weeks'),
+    # ('3', 'Month'), ('4', 'Year')])
 
     job.enable()
     try:

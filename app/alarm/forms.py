@@ -21,14 +21,16 @@ class addAlarmForm(Form):
                              get_label='name')
     heures = IntegerField('Heures', validators=[NumberRange(min=0, max=23)])
     minutes = IntegerField('Minutes', validators=[NumberRange(min=0, max=59)])
-    repetition = RadioField('List', choices=[('Repeter ? ',
-                                              'Repeter l\'alarme')])
+    repetition = SelectField('frequence',
+                             choices=[('1', 'Days'),
+                                      ('2', 'Weeks'), ('3', 'Month'),
+                                      ('4', 'Year')])
+    # TODO Add repetittion = 0 with a date picker in this case
     jours = SelectMultipleField('jours',
                                 choices=[('1', 'Lundi'), ('2', 'Mardi'),
                                          ('3', 'Mercredi'), ('4', 'Jeudi'),
                                          ('5', 'Vendredi'), ('6', 'Samedi'),
-                                         ('0', 'Dimanche')],
-                                validators=[Required()])
+                                         ('0', 'Dimanche')],)
     submit = SubmitField('valider')
 
 

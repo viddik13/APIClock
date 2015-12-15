@@ -20,3 +20,4 @@ python-crontab
 python-mpd
 feedparser
 podcastparser
+moment

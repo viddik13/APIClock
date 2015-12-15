@@ -1,19 +1,23 @@
 import urllib
 import feedparser
 import os
+import unicodedata
 
 from flask import render_template, redirect, request, url_for, \
                   flash, current_app
 from flask.ext.login import login_required, current_user
 from sqlalchemy.sql import and_
-from mpd import MPDClient
+from werkzeug.utils import secure_filename
 
 from . import radio
 from .forms import AddMusicForm, PlayRadio
 from .. import db
+from ..mympd import player
 from ..models import Music
 from ..decorators import admin_required
-from ..functions import jouerMPD, stopMPD, connectMPD
+
+
+mpd_player = player()
 
 
 @radio.route('/', methods=['GET', 'POST'], defaults={'action': 0, 'radioe': 0})
@@ -26,8 +30,6 @@ def index(action, radioe):
                                Music.users == current_user.id)).all()
     form = AddMusicForm()
     form2 = PlayRadio()
-    connectMPD()
-    client = MPDClient()
 
     if form.validate_on_submit() and form.music_type.data == '1':
         """Radio type added in bdd."""
@@ -63,23 +65,19 @@ def index(action, radioe):
         radiodel = Music.query.filter(Music.id == radioe).first()
         db.session.delete(radiodel)
         db.session.commit()
-        if radiodel.music_type == 3:
-            os.remove(current_app.config['UPLOAD_FOLDER']+name)
+        # if radiodel.music_type == 3:
+        #     os.remove(current_app.config['UPLOAD_FOLDER']+name)
         flash('Delete successful !')
         return redirect(url_for('.index'))
 
     elif action is 2:
         """ action = 2 > play radio (MPD) """
-        client.clear()
-        client.add('http://audio.scdn.arkena.com/11010/franceculture-midfi128.mp3')
-        client.play()
+        mpd_player.play()
         return redirect(url_for('.index'))
 
     elif action is 3:
         """ action = 3 > stop radio (MPD) """
-        client.clear()
-        client.stop()
-        client.close()
+        mpd_player.stop()
         return redirect(url_for('.index'))
 
     return render_template('radio/radio.html',
@@ -137,29 +135,59 @@ def podcast(action):
 
     elif action == "download":
         """Download podcast as music type media in music directory."""
-        up_dir = current_app.config['UPLOAD_FOLDER']
-        urlmusic = request.args.get('urlpodcast')
         # Format podcast name
-        name_podcast = request.args.get('nompodcast').replace('/', '_')
-        name_podcast = 'PODCAST_' + name_podcast.replace(' ', '_') + '.mp3'
-
-        print "DIR : "+up_dir
-        print "NOM : "+name_podcast
+        # http://sametmax.com/transformer-des-caracteres-speciaux-en-ascii/
+        base_string = request.args.get('nompodcast')
+        urlmusic = request.args.get('urlpodcast')
+        name_podcast = 'PODCAST_' + unicodedata.normalize('NFKD', base_string)\
+                       .encode('ascii', 'ignore') + '.mp3'
 
         try:
-            urllib.urlretrieve(urlmusic, up_dir + name_podcast)
+            app = current_app._get_current_object()
+            filename = secure_filename(name_podcast)
+            url_file = (os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            urllib.urlretrieve(urlmusic, filename)
+
             # TO ADD : check the disk space
             addmusic = Music(
-                    name=name_podcast,
-                    url=current_app.config['UPLOAD_FOLDER'] + name_podcast,
+                    name=filename,
+                    url=url_file,
                     music_type=3,
                     users=current_user.id)
             db.session.add(addmusic)
             db.session.commit()
             flash('Your podcast has been download in your Music')
-        except:
-                flash('Error adding your podcast to your music')
-        return redirect(url_for('.podcast'))
+        except IOError as e:
+            flash('Error adding your podcast to your music ({0}): {1}'
+                  .format(e.errno, e.strerror))
+        return redirect(url_for('.music'))
+
+    elif action == "Upload":
+        file = request.files['file']
+        if file.filename:
+            filename = secure_filename(file.filename)
+            filename = 'UPLOAD_'+str(filename)
+            app = current_app._get_current_object()
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+            test = os.path.join(app.config['ADMIN_LIST'], filename)
+            print test
+
+            # TO ADD : check the disk space
+            addmusic2 = Music(
+                    name=filename,
+                    #url=os.path.join(app.config['UPLOAD_FOLDER'], filename),
+                    url=test,
+                    music_type=3,
+                    users=current_user.id)
+            db.session.add(addmusic2)
+            db.session.commit()
+            musics1 = Music.query.filter(and_(Music.music_type == '3',
+                                         Music.users == current_user.id)).all()
+            flash('Your music has been upload in your Music')
+            return render_template('radio/music.html', radios=musics1)
+
+        return render_template('radio/music.html', radios=musics1)
 
     return render_template('radio/podcast.html', podcasts=podcasts)
 
@@ -189,8 +217,10 @@ def local(radio):
 def distant(radio):
     """Play arg "radio" in MPD (distant player)."""
     if radio == 'stop':
-        stopMPD()
+        # stopMPD()
+        mpd_player.stop()
         return redirect(url_for('.index'))
 
-    jouerMPD(radio)
+    # jouerMPD(radio)
+    mpd_player.play(radio)
     return render_template('radio/distant.html')

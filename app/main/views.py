@@ -14,8 +14,8 @@ from ..mympd import player
 from ..email import send_email
 from ..models import Role, User, Alarm, Music
 from ..decorators import admin_required
-from ..functions import snooze, connectMPD, jouerMPD, stopMPD
 from ..login_nav import LoginFormNav
+from ..functions import snooze
 
 # ========================================
 # ============= PUBLIC PAGES  ============
