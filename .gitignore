@@ -1,5 +1,5 @@
 # Ignorer fichiers pyc, sqlite, cfg
-# et le dossier /static
+#
 *.pyc
 *.sqlite
 *.cfg
