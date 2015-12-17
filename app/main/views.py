@@ -101,8 +101,8 @@ def dashboard(action,
       musique="http://audio.scdn.arkena.com/11010/franceculture-midfi128.mp3"):
 
     """Get and Print MPD state."""
-    MPDstatut = mpd_player.is_playing()
-    print MPDstatut
+    #MPDstatut = mpd_player.is_playing()
+    MPDstatut = None
 
     alarms = Alarm.query.filter_by(users=current_user.id).all()
     form1 = playerForm(prefix="form1")
