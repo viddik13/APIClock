@@ -16,7 +16,6 @@ from ..mympd import player
 from ..models import Music
 from ..decorators import admin_required
 
-
 mpd_player = player()
 
 
@@ -156,7 +155,7 @@ def podcast(action):
             app = current_app._get_current_object()
             filename = secure_filename(name_podcast)
             url_file = (os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            urllib.urlretrieve(urlmusic, filename)
+            urllib.urlretrieve(urlmusic, url_file)
 
             # TO ADD : check the disk space
             addmusic = Music(
@@ -225,10 +224,8 @@ def local(radio):
 def distant(radio):
     """Play arg "radio" in MPD (distant player)."""
     if radio == 'stop':
-        # stopMPD()
         mpd_player.stop()
         return redirect(url_for('.index'))
 
-    # jouerMPD(radio)
     mpd_player.play(radio)
     return render_template('radio/distant.html')

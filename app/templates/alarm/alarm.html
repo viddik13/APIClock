@@ -42,7 +42,7 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h4 class="panel-title">
-                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree">AJOUTER UNE ALARME</a>
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree">ADD ALARM (complete form)</a>
                 </h4>
             </div>
             <div id="collapseThree" class="panel-collapse collapse">
@@ -73,6 +73,7 @@ http://tympanus.net/codrops/2013/05/21/natural-language-form-with-custom-input-e
         </div> -->
 
         {{ wtf.form_field(form.Radio) }}
+        {{ wtf.form_field(form.musics) }}
 
         <!-- <div class="form-group" id="form1-podcasts"><label class="control-label" for="form1-podcast">  form.podcast.label  </label>
             <select class="form-control" id="form1-podcast" name="form1-podcast">
@@ -118,8 +119,8 @@ http://tympanus.net/codrops/2013/05/21/natural-language-form-with-custom-input-e
                         <a href="{{url_for('alarm.index', action='3', idr=alarm.id)}}" class="btn btn-success btn-sm active"
                        role="button">Activer</a>
                     {% endif %}
-                    <a href="{{url_for('alarm.index', action='2', idr=alarm.id)}}" class="btn btn-default btn-sm active"
-                       role="button">Editer</a>
+                    <!-- <a href="url_for('alarm.index', action='2', idr=alarm.id)" class="btn btn-default btn-sm active"
+                       role="button">Editer</a> -->
                     <a href="{{url_for('alarm.index', action='1', idr=alarm.id)}}" class="btn btn-danger btn-sm active"
                        role="button">Supprimer</a>
                 </td>

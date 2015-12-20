@@ -17,10 +17,14 @@ class addAlarmForm(Form):
     state = BooleanField('Active')
     # duration = SelectField('Duree', choices=[('5', '5 mn'), ('10', '10 mn'),
     # ('15', '15 mn'), ('30', '30 mn'), ('45', '45 mn'), ('59', '1 h')])
-    Radio = QuerySelectField('Radios', query_factory=getradios,
-                             get_label='name')
-    heures = IntegerField('Heures', validators=[NumberRange(min=0, max=23)])
-    minutes = IntegerField('Minutes', validators=[NumberRange(min=0, max=59)])
+    #Radio = QuerySelectField('Radios', query_factory=getradios,
+    #                         get_label='name')
+    Radio = SelectField('Radio')
+    musics = SelectField('Music')
+    heures = IntegerField('Heures', validators=[NumberRange(min=0, max=23),
+                                                Required()])
+    minutes = IntegerField('Minutes', validators=[NumberRange(min=0, max=59),
+                                                  Required()])
     repetition = SelectField('frequence',
                              choices=[('1', 'Days'),
                                       ('2', 'Weeks'), ('3', 'Month'),
@@ -32,6 +36,31 @@ class addAlarmForm(Form):
                                          ('5', 'Vendredi'), ('6', 'Samedi'),
                                          ('0', 'Dimanche')],)
     submit = SubmitField('valider')
+
+    def __init__(self, *args, **kwargs):
+        """
+        Query for form list.
+        Inset all radios/music, append 'Choose ...'
+        and reverse all to have 'Choose..' first position
+        """
+        super(addAlarmForm, self).__init__(*args, **kwargs)
+        self.Radio.choices = [(g.id, g.name) for g in
+                              Music.query.filter(and_(
+                                    Music.music_type == '1',
+                                    Music.users == current_user.id)).all()]
+        self.Radio.choices.append(('0', 'Choose radio'))
+        self.Radio.choices.reverse()
+
+        self.musics.choices = [(g.id, g.name) for g in
+                              Music.query.filter(and_(
+                                  Music.music_type == '3',
+                                  Music.users == current_user.id)).all()]
+        self.musics.choices.append(('0', 'Choose music'))
+        self.musics.choices.reverse()
+
+    def validate(self):
+        if not self.heures.data:
+            self.heures.errors.append('Hours Needed')
 
 
 class addAlarmForm2(Form):

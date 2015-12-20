@@ -36,7 +36,18 @@ def index(action, idr):
             monalarme['id'] = lastid + 1
         monalarme['heure'] = form.heures.data
         monalarme['minute'] = form.minutes.data
-        monalarme['path'] = form.Radio.data.url
+        print form.Radio.data
+        print type(form.Radio.data)
+        # return music or radio url depending on choice in form
+        if form.Radio.data != '0' and form.musics.data == '0' :
+            radio_choice = Music.query.filter(Music.id == form.Radio.data).first()
+            monalarme['path'] = radio_choice.url
+        elif form.Radio.data == '0' and form.musics.data != '0' :
+            music_choice = Music.query.filter(Music.id == form.musics.data).first()
+            monalarme['path'] = music_choice.name
+        else:
+            flash('Choose a media (music or radio)')
+
 
         # Complete Form
         # ---------------------------------------------------

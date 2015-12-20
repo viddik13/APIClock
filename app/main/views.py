@@ -1,7 +1,7 @@
 # coding: utf-8
 import os
 
-from flask import render_template, redirect, url_for, flash, request
+from flask import render_template, redirect, url_for, flash, request, current_app
 from flask.ext.login import login_required, current_user
 from flask.ext.mail import Message
 from mpd import MPDClient
@@ -101,8 +101,8 @@ def dashboard(action,
       musique="http://audio.scdn.arkena.com/11010/franceculture-midfi128.mp3"):
 
     """Get and Print MPD state."""
-    #MPDstatut = mpd_player.is_playing()
-    MPDstatut = None
+    MPDstatut = mpd_player.is_playing()
+    #MPDstatut = None
 
     alarms = Alarm.query.filter_by(users=current_user.id).all()
     form1 = playerForm(prefix="form1")
@@ -128,7 +128,7 @@ def dashboard(action,
         elif form1.radio.data == "0" and form1.music.data != "0":
             mediaid = form1.music.data
             choosen_media = Music.query.filter(Music.id == mediaid).first()
-            mpd_player.play(choosen_media.name.encode('utf-8'))
+            mpd_player.play(choosen_media.name)
 
         elif form1.radio.data == "0" and form1.music.data == "0":
             mediaid = "0"
@@ -227,3 +227,16 @@ def users():
         flash('The user has been deleted.')
         return redirect(url_for('.users', users=user))
     return render_template('admin/users.html', users=user)
+
+
+@main.route('/config', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def config():
+    app = current_app._get_current_object()
+    list_config = []
+    for key, value in app.config.iteritems():
+        temp = [key,value]
+        list_config.append(temp)
+
+    return render_template('admin/config.html', config=list_config)

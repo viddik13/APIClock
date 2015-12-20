@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from mpd import MPDClient
+#from mpd import MPDClient
+import mpd
 import time
 import argparse
 import podcastparser
@@ -10,11 +11,16 @@ import pprint
 
 class player():
 
-    """Play arg "radio" in local HTML player."""
+    """
+    Mpdclient object.
+    reconnect wrapper for ovoiding MPD deco.
+    method: clear, play, stop, volup, voldown, is_playing
+    is_playing return mpd.status
+    """
 
     def __init__(self):
         """Connection init."""
-        self.client = MPDClient()
+        self.client = mpd.MPDClient()
         self.client.timeout = 10
         self.client.idletimeout = None
         try:
@@ -22,6 +28,20 @@ class player():
             self.client.update()
         except Exception:
             print "Can't Connect to MPD..."
+
+    #  ============ TEST ============
+    def __getattr__(self):
+        return self._call_with_reconnect(getattr(self.client))
+
+    def _call_with_reconnect(self, func):
+        def wrapper(*args, **kwargs):
+            try:
+                return func(*args, **kwargs)
+            except mpd.ConnectionError:
+                self.connect(self.host, self.port)
+                return func(*args, **kwargs)
+        return wrapper
+    #  ============ FIN TEST ============
 
     def clear(self):
         """Clear player playlist."""
