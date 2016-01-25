@@ -5,6 +5,7 @@
 *.cfg
 *.geany
 /app/static/music/*
+/app/templates/src/base/*
 /tmp
 
 run.py
