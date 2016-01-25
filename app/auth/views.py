@@ -36,7 +36,8 @@ def login():
             return redirect(request.args.get('next') or
                             url_for('main.dashboard'))
         flash('Invalid username or password.')
-    return render_template('auth/login.html', form=form)
+    # return render_template('auth/login.html', form=form)
+    return render_template('src/API_signin.html', form=form)
 
 
 @auth.route('/logout')

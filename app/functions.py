@@ -39,6 +39,35 @@ class Snooze(Thread):
         self.client.stop()
 
 
+def snooze(radiosnooze, minutessnooze):
+    """Create a Snooze thread and start it."""
+    thr_snooze = Snooze(radiosnooze, minutessnooze)
+    thr_snooze.start()
+
+
+class Chrono_(Thread):
+    """Activate a thread for chrono function."""
+
+    def __init__(self, mediachrono, minuteschrono):
+        Thread.__init__(self)
+        self.media = mediachrono
+        self.duree = minuteschrono * 60
+        self.client = player()
+
+    def run(self):
+        """start jouerMPD after a delay = minuteschrono."""
+        time.sleep(self.duree)
+        self.client.play(self.media)
+        time.sleep(120)
+        self.client.stop()
+
+
+def Chrono(mediachrono, minuteschrono):
+    """Create a Snooze thread and start it."""
+    thr_chrono = Chrono_(mediachrono, minuteschrono)
+    thr_chrono.start()
+
+
 def addcronenvoi(monalarme):
     """Transform and add alarm in crontab with a 2h duration."""
     alarmduration = int(monalarme['heure'])+2
@@ -136,57 +165,3 @@ def getpodcasts():
                      for i, j in enumerate(d.entries)]
         listepodcast.append(emissions)
     return listepodcast
-
-
-def connectMPD():
-    """Connect MPD service on port 6600."""
-    client = MPDClient()       # create client object
-    client.timeout = 10        # network timeout in seconds default: None
-    client.idletimeout = None  # timeout for fetching result of idle comm.
-    try:
-        client.connect("localhost", 6600)  # connect to localhost:6600
-        client.update()
-        global MPDstatut            # get and modify MPD statut in navbar
-        MPDstatut = client.status()['state']
-    except Exception:
-        print "Can't Connect to MPD..."
-
-
-def jouerMPD(path ='http://audio.scdn.arkena.com/11010/franceculture-midfi128.mp3'):
-    """Play mpd with url playlist in arg."""
-    client = MPDClient()    # create client object
-    client.timeout = 10     # network timeout in seconds
-    client.idletimeout = None
-    try:
-        client.connect("localhost", 6600)  # connect to localhost:6600
-        client.update()
-        client.clear()
-        client.add(path)
-        client.play()
-        global MPDstatut            # get and modify MPD statut in navbar
-        MPDstatut = client.status()['state']
-        print MPDstatut
-    except Exception:
-        print "Can't Connect to MPD..."
-
-
-def stopMPD():
-    """ Stop MPD """
-    client = MPDClient()                   # create client object
-    try:
-        client.connect("localhost", 6600)  # connect to localhost:6600
-        client.clear()
-        client.stop()
-        client.close()
-        client.disconnect()  # disconnect from the server
-        global MPDstatut     # get and modify MPD statut in navbar
-        MPDstatut = client.status()['state']
-        print MPDstatut
-    except Exception:
-        print "Can't Connect to MPD..."
-
-
-def snooze(radiosnooze, minutessnooze):
-    """Create a Snooze thread and start it"""
-    thr_snooze = Snooze(radiosnooze, minutessnooze)
-    thr_snooze.start()

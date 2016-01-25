@@ -54,9 +54,6 @@
     </div>
 </div>
 
-<!-- **********************************************************
-http://tympanus.net/codrops/2013/05/21/natural-language-form-with-custom-input-elements/
-********************************************************** -->
 <hr>
     <form action="" method="post" class="form" role="form">
         {{ form.hidden_tag() }}
@@ -64,31 +61,9 @@ http://tympanus.net/codrops/2013/05/21/natural-language-form-with-custom-input-e
         {{ wtf.form_field(form.heures) }}
         {{ wtf.form_field(form.minutes) }}
 
-        <!-- <div class="form-group" id="form1-medias"><label class="control-label" for="form1-media">  form.media.label  </label>
-            <select class="form-control" id="form1-media" name="form1-media">
-            % for choice in form.media.choices %
-                <option value="  choice[0]  ">  choice[1]  </option>
-            % endfor %
-            </select>
-        </div> -->
-
         {{ wtf.form_field(form.Radio) }}
         {{ wtf.form_field(form.musics) }}
 
-        <!-- <div class="form-group" id="form1-podcasts"><label class="control-label" for="form1-podcast">  form.podcast.label  </label>
-            <select class="form-control" id="form1-podcast" name="form1-podcast">
-            % for podcast in form.podcast.choices %
-                <option value="  podcast[0]  ">  podcast[1]  </option>
-            % endfor %
-            </select>
-        </div>
-        <div class="form-group" id="form1-musics"><label class="control-label" for="form1-music">  form.music.label  </label>
-            <select class="form-control" id="form1-music" name="form1-music">
-                % for music in form.music.choices %
-                    <option value="  music[0]  ">  music[1]  </option>
-                % endfor %
-            </select>
-        </div> -->
         {{ wtf.form_field(form.submit) }}
     </form>
 
@@ -119,8 +94,6 @@ http://tympanus.net/codrops/2013/05/21/natural-language-form-with-custom-input-e
                         <a href="{{url_for('alarm.index', action='3', idr=alarm.id)}}" class="btn btn-success btn-sm active"
                        role="button">Activer</a>
                     {% endif %}
-                    <!-- <a href="url_for('alarm.index', action='2', idr=alarm.id)" class="btn btn-default btn-sm active"
-                       role="button">Editer</a> -->
                     <a href="{{url_for('alarm.index', action='1', idr=alarm.id)}}" class="btn btn-danger btn-sm active"
                        role="button">Supprimer</a>
                 </td>

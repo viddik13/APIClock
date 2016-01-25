@@ -46,7 +46,7 @@
                             <form method="POST" action="/" class="form-inline"
                                 style="margin-top:12px;">
                                 {{ form2.hidden_tag() }}
-                                {{ form2.email }} {{ form2.password }} {{ form2.remember_me }}
+                                {{ form2.email }} {{ form2.password }} {{ form2.remember_me }}{{ form2.remember_me.label }}
                                 {{ form2.submit }}
                             </form>
                         {% endif %}
@@ -61,7 +61,7 @@
                         <li><a href="{{ url_for('main.contact') }}">Contact</a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
-                        
+
                         {# MPD status #}
                         {% if MPDstatut == 'play' %}
                             <li><a href="#" style="background-color:yellow;">MPD ON</a></li>

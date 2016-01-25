@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}Apiclock - Alarm{% endblock %}
+
+{% block head %}
+    {{ super() }}
+    <script language="javascript">//<![CDATA[
+        $(document).ready(function() {
+            $("#form1-radios").show();
+            $("#form1-podcasts").hide();
+            $("#form1-musics").hide();
+
+            $("#form1-media").change(function() {
+                if ($("#form1-media").val() == "1"){
+                    $("#form1-radios").show();
+                    $("#form1-podcasts").hide();
+                    $("#form1-musics").hide();
+                } else if ($("#form1-media").val() == "2") {
+                   $("#form1-radios").hide();
+                   $("#form1-podcasts").show();
+                   $("#form1-musics").hide();
+                } else if ($("#form1-media").val() == "3") {
+                   $("#form1-radios").hide();
+                   $("#form1-podcasts").hide();
+                   $("#form1-musics").show();
+                } else {
+                   $("#form1-radios").hide();
+                   $("#form1-podcasts").hide();
+                   $("#form1-musics").hide();
+                }
+            });
+        });
+        //]]>
+    </script>
+{% endblock %}
+
+{% block page_content %}
+
+<div class="bs-example add_media">
+    <div class="panel-group" id="accordion">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree">ADD ALARM (complete form)</a>
+                </h4>
+            </div>
+            <div id="collapseThree" class="panel-collapse collapse">
+                <div class="panel-body">
+		            {{ wtf.quick_form(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- **********************************************************
+http://tympanus.net/codrops/2013/05/21/natural-language-form-with-custom-input-elements/
+********************************************************** -->
+<hr>
+    <form action="" method="post" class="form" role="form">
+        {{ form.hidden_tag() }}
+
+        {{ wtf.form_field(form.heures) }}
+        {{ wtf.form_field(form.minutes) }}
+
+        <!-- <div class="form-group" id="form1-medias"><label class="control-label" for="form1-media">  form.media.label  </label>
+            <select class="form-control" id="form1-media" name="form1-media">
+            % for choice in form.media.choices %
+                <option value="  choice[0]  ">  choice[1]  </option>
+            % endfor %
+            </select>
+        </div> -->
+
+        {{ wtf.form_field(form.Radio) }}
+        {{ wtf.form_field(form.musics) }}
+
+        <!-- <div class="form-group" id="form1-podcasts"><label class="control-label" for="form1-podcast">  form.podcast.label  </label>
+            <select class="form-control" id="form1-podcast" name="form1-podcast">
+            % for podcast in form.podcast.choices %
+                <option value="  podcast[0]  ">  podcast[1]  </option>
+            % endfor %
+            </select>
+        </div>
+        <div class="form-group" id="form1-musics"><label class="control-label" for="form1-music">  form.music.label  </label>
+            <select class="form-control" id="form1-music" name="form1-music">
+                % for music in form.music.choices %
+                    <option value="  music[0]  ">  music[1]  </option>
+                % endfor %
+            </select>
+        </div> -->
+        {{ wtf.form_field(form.submit) }}
+    </form>
+
+<hr>
+
+<h2>ALARMES</h2>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Days</th>
+                <th>Frequency</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for alarm in alarms %}
+            <tr>
+                <td>{{ alarm.namealarme }}</td>
+                <td>{{ alarm.days }}</td>
+                <td>{{ alarm.frequence }}</td>
+                <td>
+                    {% if alarm.state == 1 %}
+                        <a href="{{url_for('alarm.index', action='3', idr=alarm.id)}}" class="btn btn-danger btn-sm active"
+                       role="button">Desactiver</a>
+                    {% else %}
+                        <a href="{{url_for('alarm.index', action='3', idr=alarm.id)}}" class="btn btn-success btn-sm active"
+                       role="button">Activer</a>
+                    {% endif %}
+                    <a href="{{url_for('alarm.index', action='1', idr=alarm.id)}}" class="btn btn-danger btn-sm active"
+                       role="button">Supprimer</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody
+    </table>
+<br/>
+
+<script src="{{ url_for('static', filename='js/nlform.js') }}"></script>
+<script>
+    var nlform = new NLForm(document.getElementById( 'nl-form' ));
+</script>
+
+{% endblock %}

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#from mpd import MPDClient
+# from mpd import MPDClient
 import mpd
 import time
 import argparse
@@ -31,6 +31,7 @@ class player():
 
     #  ============ TEST ============
     def __getattr__(self):
+        """Catch and solve mpd.ConnectionError issue"""
         return self._call_with_reconnect(getattr(self.client))
 
     def _call_with_reconnect(self, func):
@@ -49,6 +50,15 @@ class player():
 
     def play(self,
         media="http://audio.scdn.arkena.com/11010/franceculture-midfi128.mp3"):
+        """Start player with media(url) arg."""
+        self.client.clear()
+        self.client.add(media)
+        self.client.setvol(90)
+        self.client.play()
+
+    def chrono(self,
+               chrono,
+               media="http://audio.scdn.arkena.com/11010/franceculture-midfi128.mp3"):
         """Start player with media(url) arg."""
         self.client.clear()
         self.client.add(media)
@@ -95,7 +105,6 @@ class player():
         for key, value in status.items():
             monstatus[key] = value.encode('utf-8')
 
-        time.sleep(2)
         maplaylist = self.client.playlistid()
         try:
             for key, value in maplaylist[0].items():
@@ -105,17 +114,18 @@ class player():
         return monstatus
 
     def is_playing(self):
-        """Verify player playing and update globale MPDstatut."""
-        if self.status():
-            stat = self.status()
-            global MPDstatut
-            if stat['state'] != None:
-                MPDstatut = stat['state']
-            else:
-                MPDstatut = None
-        else:
-            MPDstatut = None
-        return MPDstatut
+    #    """Verify player playing and update globale MPDstatut."""
+    #    if self.status():
+    #        stat = self.status()
+    #        global MPDstatut
+    #        if stat['state'] != None:
+    #            MPDstatut = stat['state']
+    #        else:
+    #            MPDstatut = None
+    #    else:
+    #        MPDstatut = None
+    #    return MPDstatut
+        pass
 
 
 def main():
@@ -150,7 +160,6 @@ def main():
     elif command == 'podlist':
         parsed = podcastparser.parse(media, urllib.urlopen(media))
         pprint.pprint(parsed)
-
 
 if __name__ == "__main__":
     main()

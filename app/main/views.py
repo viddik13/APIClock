@@ -2,25 +2,41 @@
 import os
 
 from flask import render_template, redirect, url_for, flash, request, current_app
-from flask.ext.login import login_required, current_user
+from flask.ext.login import login_user, login_required, current_user
 from flask.ext.mail import Message
 from mpd import MPDClient
 
 from . import main
 from .forms import EditProfileForm, EditProfileAdminForm, playerForm,\
-                   ContactForm, snoozeForm
+                   ContactForm, snoozeForm, ChronoForm, LoginForm
 from .. import db
 from ..mympd import player
 from ..email import send_email
 from ..models import Role, User, Alarm, Music
 from ..decorators import admin_required
 from ..login_nav import LoginFormNav
-from ..functions import snooze
+from ..functions import snooze, Chrono
 
 # ========================================
 # ============= PUBLIC PAGES  ============
 # ========================================
 mpd_player = player()
+
+
+@main.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+
+    if request.method == 'POST':
+        user = User.query.filter_by(email=form.email.data).first()
+        if user is not None and user.verify_password(form.password.data):
+            login_user(user, form.remember_me.data)
+            return redirect(request.args.get('next') or
+                            url_for('.dashboard'))
+        flash('Invalid username or password.')
+        return redirect(url_for('.login'))
+    return render_template('src/API_signin.html', form=form)
+
 
 @main.route('/contact', methods=['GET', 'POST'])
 def contact():
@@ -58,15 +74,14 @@ def apiclock():
 
 @main.route('/presentation')
 def presentation():
-    return render_template('public/presentation.html')
+    # return render_template('src/presentation.html')
+    return render_template('src/API_blog.html')
 
 
 @main.route('/installation')
 def installation():
-
     form2 = LoginFormNav()
     form2.validateFormNav()
-
     return render_template('public/installation.html', form2=form2)
 
 
@@ -81,10 +96,13 @@ def index():
     """Index."""
     form2 = LoginFormNav()
     if form2.validateFormNav():
-        form1 = playerForm(prefix="form1")
-        formsnooze = snoozeForm()
+        form1       = playerForm(prefix="form1")
+        formsnooze  = snoozeForm()
+        form_chrono = ChronoForm()
         return render_template('dashboard.html',
-                               form1=form1, formsnooze=formsnooze)
+                               form1=form1,
+                               formsnooze=formsnooze,
+                               form_chrono=form_chrono)
     else:
         return render_template('index.html', form2=form2)
 
@@ -102,11 +120,12 @@ def dashboard(action,
 
     """Get and Print MPD state."""
     MPDstatut = mpd_player.is_playing()
-    #MPDstatut = None
+    # MPDstatut = None
 
     alarms = Alarm.query.filter_by(users=current_user.id).all()
     form1 = playerForm(prefix="form1")
     formsnooze = snoozeForm()
+    form_chrono = ChronoForm(prefix="form_chrono")
 
     if formsnooze.submitsnooze.data:
         """Get radio by id and return url."""
@@ -117,11 +136,40 @@ def dashboard(action,
         snooze(radiosnooze, minutessnooze)
         return redirect(url_for('.dashboard'))
 
+    elif form_chrono.submit.data:
+        """CHRONO : Depending on media type, get id and then request for url"""
+        delay_chrono = int(form_chrono.chrono_minutes.data)
+
+        if form_chrono.radio.data != "0":
+            """
+            launch chrono (func and thread) with radio url
+            and choosen delay.
+            """
+            mediaid = form_chrono.radio.data
+            choosen_media = Music.query.filter(Music.id == mediaid).first()
+            Chrono(choosen_media.url, delay_chrono)
+
+        elif form_chrono.radio.data == "0" and form_chrono.music.data != "0":
+            """launch chrono (func and thread) with music and choosen delay"""
+            mediaid = form_chrono.music.data
+            choosen_media = Music.query.filter(Music.id == mediaid).first()
+            Chrono(choosen_media.url, delay_chrono)
+
+        elif form_chrono.radio.data == "0" and form_chrono.music.data == "0":
+            """Check form validity : no missing values."""
+            mediaid = "0"
+            flash("No media selected, please select a radio or music !")
+        else:
+            flash("No media selected, please select a radio or music !")
+        return redirect(url_for('.dashboard'))
+
     elif form1.submit.data:
-        """Depending on media type get id and then request for url."""
+        print "playing form"
+        """PLAY : Depending on media type, get id and then request for url."""
 
         if form1.radio.data != "0":
             mediaid = form1.radio.data
+            print "ID Med playing : "+mediaid
             choosen_media = Music.query.filter(Music.id == mediaid).first()
             mpd_player.play(choosen_media.url)
 
@@ -161,7 +209,9 @@ def dashboard(action,
 
     else:
         return render_template('dashboard.html', form1=form1,
-                               formsnooze=formsnooze, alarms=alarms,
+                               form_chrono=form_chrono,
+                               formsnooze=formsnooze,
+                               alarms=alarms,
                                MPDstatut=MPDstatut)
 
 

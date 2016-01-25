@@ -1,28 +1,25 @@
 from flask import render_template, redirect, url_for, flash, request
 from flask.ext.login import login_required, current_user
-from sqlalchemy.sql import and_
-import datetime
 import moment
 
 from . import alarm
-from .forms import addAlarmForm, addAlarmForm2
+from .forms import addAlarmForm
 from .. import db
 from ..models import Alarm, Music
 from ..functions import addcronenvoi, removecron, statealarm
-from ..decorators import admin_required
 
 
 @alarm.route('/', methods=['GET', 'POST'],
              defaults={'action': '0', 'idr': 'N'})
 @alarm.route('/<action>/<idr>', methods=['GET', 'POST'])
 @login_required
-@admin_required
 def index(action, idr):
     """Index."""
+
     alarms = Alarm.query.filter(Alarm.users == current_user.id).all()
 
     form = addAlarmForm(state=True)
-    form2 = addAlarmForm2(state=True)
+    # form2 = addAlarmForm2(state=True)
     monalarme = {}
 
     if form.submit.data:
@@ -39,15 +36,16 @@ def index(action, idr):
         print form.Radio.data
         print type(form.Radio.data)
         # return music or radio url depending on choice in form
-        if form.Radio.data != '0' and form.musics.data == '0' :
-            radio_choice = Music.query.filter(Music.id == form.Radio.data).first()
+        if form.Radio.data != '0' and form.musics.data == '0':
+            radio_choice = Music.query.filter(
+                                        Music.id == form.Radio.data).first()
             monalarme['path'] = radio_choice.url
-        elif form.Radio.data == '0' and form.musics.data != '0' :
-            music_choice = Music.query.filter(Music.id == form.musics.data).first()
+        elif form.Radio.data == '0' and form.musics.data != '0':
+            music_choice = Music.query.filter(
+                                        Music.id == form.musics.data).first()
             monalarme['path'] = music_choice.name
         else:
             flash('Choose a media (music or radio)')
-
 
         # Complete Form
         # ---------------------------------------------------
@@ -87,6 +85,7 @@ def index(action, idr):
         else:
             flash('Error adding your alarm.')
         return redirect(url_for('.index'))
+
 # ******************************************************************
 # ******************************************************************
 
@@ -99,12 +98,12 @@ def index(action, idr):
         flash('Alarm has been deleted')
         return redirect(url_for('.index'))
 
-    elif action == '2':
-        # edit alarm by id (idr)
-        alarmeedit = Alarm.query.filter(Alarm.id == idr).first()
-        form = addAlarmForm(obj=alarmeedit)
-        return render_template("alarm/alarm.html", form=form,
-                               user=current_user, alarms=alarms)
+    # elif action == '2':
+    #     # edit alarm by id (idr)
+    #     alarmeedit = Alarm.query.filter(Alarm.id == idr).first()
+    #     form = addAlarmForm(obj=alarmeedit)
+    #     return render_template("alarm/alarm.html", form=form,
+    #                            user=current_user, alarms=alarms)
 
     elif action == '3':
         # Call statealarm function which activate / deactivate alarm

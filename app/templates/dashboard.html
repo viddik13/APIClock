@@ -116,10 +116,66 @@
                 {% endfor %}
             </select>
         </div>
-        <input class="btn btn-primary" id="form1-submit" name="form1-submit" type="submit" value="Jouer">
+        <input class="btn btn-primary" id="form1-submit" name="form1-submit" type="submit" value="Play">
         <a href="{{ url_for('radio.index') }}" class="btn btn-success" role="button">Add media</a>
     </form>
 </div>
+
+
+<div class="col-md-4">
+    <h2>CHRONO</h2>
+    <form id="chrono_form" action="" method="post" class="form" role="form">
+        {{ form_chrono.hidden_tag() }}
+        <div class="form-group" id="form_chrono-medias"><label class="control-label" >{{ form_chrono.media.label }}</label>
+            <select class="form-control" id="form_chrono-media" name="form_chrono-media">
+            {% for choice in form_chrono.media.choices %}
+                <option value="{{choice[0]}}">{{ choice[1] }}</option>
+            {% endfor %}
+            </select>
+        </div>
+        <div class="form-group" id="form_chrono-radios"><label class="control-label" >{{ form_chrono.radio.label }}</label>
+            <select class="form-control" id="form_chrono-radio" name="form_chrono-radio">
+            {% for radio in form_chrono.radio.choices %}
+                {# set default selection if value ="Choose media" with id = 0' #}
+                {% if radio[1] == 'Choose Radio' %}
+                    <option value="{{radio[0]}}" selected="selected">{{ radio[1] }}</option>
+                {% else %}
+                    <option value="{{radio[0]}}">{{ radio[1] }}</option>
+                {% endif %}
+            {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group" id="form_chrono-musics"><label class="control-label" >{{ form_chrono.music.label }}</label>
+            <select class="form-control" id="form_chrono-music" name="form_chrono-music">
+                {% for music in form_chrono.music.choices %}
+                    {# set default selection if value ="Choose media" with id = 0' #}
+                    {% if music[1] == 'Choose Media' %}
+                        <option value="{{music[0]}}" selected="selected">{{ music[1] }}</option>
+                    {% else %}
+                        <option value="{{music[0]}}">{{ music[1] }}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group" id="form_chrono-chrono_minutes"><label class="control-label" >{{ form_chrono.chrono_minutes.label }}</label>
+            <select class="form-control" id="form_chrono-chrono_minutes" name="form_chrono-chrono_minutes">
+                {% for minute in form_chrono.chrono_minutes.choices %}
+                    {# set default selection if value ="1" with id = 0' #}
+                    {% if minute[1] == 'Choose delay' %}
+                        <option value="{{minute[0]}}" selected="selected">{{ minute[1] }}</option>
+                    {% else %}
+                        <option value="{{minute[0]}}">{{ minute[1] }}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+        </div>
+
+        <input class="btn btn-primary" id="form_chrono-submit" name="form_chrono-submit" type="submit" value="Start">
+    </form>
+</div>
+
 
 <!--
 <div class="col-md-4">
@@ -148,7 +204,6 @@
     <h2>PLAY</h2>
     {{ wtf.quick_form(form1) }}
 </div> -->
-
 
 <div class="col-md-4">
     <h2>SNOOZE</h2>
