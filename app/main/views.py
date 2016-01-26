@@ -40,7 +40,7 @@ def login():
 
 @main.route('/contact', methods=['GET', 'POST'])
 def contact():
-    form = ContactForm()
+    form = ContactForm(request.form)
 
     form2 = LoginFormNav()
     form2.validateFormNav()
