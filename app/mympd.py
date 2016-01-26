@@ -97,8 +97,9 @@ class player():
 
     def status(self):
         """Get player status."""
-        if (self.client.status()):
-            status = self.client.status()
+        current_status = self.client.status()
+        if (current_status):
+            status = current_status
 
         monstatus = {}
 
@@ -111,21 +112,16 @@ class player():
                 monstatus[key] = value.decode('utf-8')
         except:
             pass
+
         return monstatus
 
     def is_playing(self):
-    #    """Verify player playing and update globale MPDstatut."""
-    #    if self.status():
-    #        stat = self.status()
-    #        global MPDstatut
-    #        if stat['state'] != None:
-    #            MPDstatut = stat['state']
-    #        else:
-    #            MPDstatut = None
-    #    else:
-    #        MPDstatut = None
-    #    return MPDstatut
-        pass
+        """Verify player playing and update globale MPDstatut."""
+
+        if self.status()['state'] == 'stop':
+            return False
+        else:
+            return True
 
 
 def main():
