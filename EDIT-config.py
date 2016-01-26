@@ -1,4 +1,5 @@
 import os
+import logging
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 class Config:
@@ -14,6 +15,12 @@ class Config:
     apiclock_MAIL_SENDER = 'PUT HERE THE SENDER YOU WANT TO DSIPLAY'
     # important !! the user registered with these email will have specials (all) rights !
     apiclock_ADMIN = 'PUT HERE YOUR EMAIL'
+
+    # Logging path
+    # This default path should be updated, /tmp/ directory is not safe for logging
+    LOGGING_PATH  = "/tmp/apiclock.log"
+    # Loging level, by default DEBUG, you may want to use it as NOTICE
+    LOGGING_LEVEL = logging.DEBUG
 
     @staticmethod
     def init_app(app):
