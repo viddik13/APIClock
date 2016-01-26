@@ -64,7 +64,9 @@ def contact():
             return render_template('public/contact.html', success=True)
 
     elif request.method == 'GET':
-        return render_template('public/contact.html', form=form, form2=form2)
+        # return render_template('public/contact.html', form=form, form2=form2)
+        return render_template('src/SITE_contact.html', form=form)
+
 
 
 @main.route('/apiclock')

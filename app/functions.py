@@ -2,7 +2,7 @@ import os
 import sys
 import time
 import feedparser
-import moment
+#import moment
 
 from crontab import CronTab
 from mpd import MPDClient
