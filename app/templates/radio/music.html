@@ -30,8 +30,8 @@
                 <tr>
                     <td>{{ radio.name }} </td>
                     <td>
-                        <a href="{{url_for('radio.local', radio=radio.url)}}"
-                            class="btn btn-default btn-sm active" role="button">Local</a>
+                        <a href="/{{radio.url}}"
+                           class="btn btn-default btn-sm active" role="button">Local</a>
                         <a href="{{url_for('radio.distant', radio=radio.name)}}"
                             class="btn btn-primary btn-sm active" role="button">Distant</a>
                     </td>

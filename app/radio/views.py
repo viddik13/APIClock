@@ -177,14 +177,14 @@ def podcast(action):
             filename = secure_filename(file.filename)
             filename = 'UPLOAD_'+str(filename)
             app = current_app._get_current_object()
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
-            #test = os.path.join(app.config['ADMIN_LIST'], filename)
-            # TO ADD : check the disk space
+            file_path = os.path.join(app.config['BASE_APP_DIR'], app.config['UPLOAD_FOLDER'], filename)
+            file.save(file_path)
+
+            file_url = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             addmusic2 = Music(
                     name=filename,
-                    #url=os.path.join(app.config['UPLOAD_FOLDER'], filename),
-                    url=os.path.join(app.config['UPLOAD_FOLDER'], filename),
+                    url=file_url,
                     music_type=3,
                     users=current_user.id)
             db.session.add(addmusic2)

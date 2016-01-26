@@ -22,6 +22,9 @@ class Config:
     # Loging level, by default DEBUG, you may want to use it as NOTICE
     LOGGING_LEVEL = logging.DEBUG
 
+    BASE_APP_DIR  = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'app/')
+    UPLOAD_FOLDER = "static/medias/"
+
     @staticmethod
     def init_app(app):
         pass
