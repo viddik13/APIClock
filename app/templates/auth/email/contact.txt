@@ -1,0 +1,14 @@
+Dear Lau,
+
+A user try to contact you.
+His name is {{ name }} ({{ mail }}) and he wants to talk about: {{ subject2 }}
+====================================
+
+{{ message }}
+
+====================================
+Sincerely,
+
+The Laurence_Calzone Webmaster and lover :)
+
+Note: replies to this email address are not monitored.

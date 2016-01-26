@@ -45,23 +45,40 @@ def contact():
     form2 = LoginFormNav()
     form2.validateFormNav()
 
+    # if request.method == 'POST':
+    #
+    #     if form.validate() == False:
+    #         flash('All fields are required.')
+    #         return render_template('src/SITE_contact.html', form=form)
+    #     else:
+    #     msg = Message(form.data['subject'],
+    #                   sender='[Contact] - Apiclock',
+    #                   recipients=['j_fiot@hotmail.com'])
+    #     msg.body = """
+    #     From: %s &lt; %s &gt; %s """ % (form.data['name'],
+    #                                     form.data['email'],
+    #                                     form.data['message'])
+    #     send_email('j_fiot@hotmail.com',
+    #                'APICLOCK MAIL from ' + form.data['email'],
+    #                'auth/email/contact',
+    #                msg.body)
+
     if request.method == 'POST':
-        if form.validate() == False:
-            flash('All fields are required.')
-            return render_template('public/contact.html', form=form)
-        else:
-            msg = Message(form.subject.data,
-                          sender='[Contact] - Apiclock',
-                          recipients=['j_fiot@hotmail.com'])
-            msg.body = """
-            From: %s &lt; %s &gt; %s """ % (form.name.data,
-                                            form.email.data,
-                                            form.message.data)
-            send_email(current_user.email,
-                       'APICLOCK MAIL from ' + form.email.data,
-                       'auth/email/contact',
-                       msg.body)
-            return render_template('public/contact.html', success=True)
+        user_name = form.data['name']
+        user_mail = form.data['email']
+        subject = form.data['subject']
+        message = form.data['message']
+
+        send_email('jeromefiot@gmail.com',
+                   'Contact APICLOCK',
+                   'auth/email/contact',
+                   name=user_name,
+                   mail=user_mail,
+                   message=message,
+                   subject2=subject)
+        flash('An email has been sent to Jerome. \
+               He will answer as soon as possible. Have a nice day !')
+        return render_template('src/SITE_contact.html', success=True)
 
     elif request.method == 'GET':
         # return render_template('public/contact.html', form=form, form2=form2)
@@ -71,7 +88,8 @@ def contact():
 
 @main.route('/apiclock')
 def apiclock():
-    return render_template('index.html')
+    return render_template('src/SITE_home.html')
+    # return render_template('index.html')
 
 
 @main.route('/presentation')
