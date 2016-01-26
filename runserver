@@ -1,0 +1,16 @@
+#!/bin/bash
+# Bash wrapper for command: `python manage.py runserver`
+# This script will force output to a logfile
+# Usage: ./runserver [ <logfile-path> ]
+
+DEFAULT_LOGFILE="/tmp/apiclock.log"
+
+# Get argument
+if [ "$1" == "" ]; then
+    logfile=$DEFAULT_LOGFILE
+else
+    logfile="$1"
+fi
+
+# Execute command
+python manage.py runserver 2>&1 | tee $logfile
