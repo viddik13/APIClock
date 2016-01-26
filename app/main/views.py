@@ -1,7 +1,7 @@
 # coding: utf-8
 import os
 
-from flask import render_template, redirect, url_for, flash, request, current_app
+from flask import render_template, redirect, url_for, flash, request, current_app, g
 from flask.ext.login import login_user, login_required, current_user
 from flask.ext.mail import Message
 from mpd import MPDClient
@@ -22,6 +22,12 @@ from ..functions import snooze, Chrono
 # ========================================
 mpd_player = player()
 
+@main.before_request
+def mpd_status():
+    if current_user.is_authenticated():
+        g.mpd_status = mpd_player.is_playing()
+    else:
+        g.mpd_status = None
 
 @main.route('/login', methods=['GET', 'POST'])
 def login():
@@ -232,7 +238,7 @@ def dashboard(action,
                                form_chrono=form_chrono,
                                formsnooze=formsnooze,
                                alarms=alarms,
-                               MPDstatut=MPDstatut)
+                               )
 
 
 @main.route('/edit-profile', methods=['GET', 'POST'])
