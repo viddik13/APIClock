@@ -118,7 +118,7 @@ class player():
     def is_playing(self):
         """Verify player playing and update globale MPDstatut."""
 
-        if self.status()['state'] == 'stop':
+        if self.client.status()['state'] == 'stop':
             return False
         else:
             return True

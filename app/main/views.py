@@ -22,12 +22,14 @@ from ..functions import snooze, Chrono
 # ========================================
 mpd_player = player()
 
+
 @main.before_request
 def mpd_status():
     if current_user.is_authenticated():
         g.mpd_status = mpd_player.is_playing()
     else:
         g.mpd_status = None
+
 
 @main.route('/login', methods=['GET', 'POST'])
 def login():
