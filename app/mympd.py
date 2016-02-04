@@ -43,7 +43,7 @@ class player():
                 return func(*args, **kwargs)
         return wrapper
     #  ============ FIN TEST ============
-
+#
     def clear(self):
         """Clear player playlist."""
         self.client.clear()
@@ -118,10 +118,12 @@ class player():
     def is_playing(self):
         """Verify player playing and update globale MPDstatut."""
 
-        if self.client.status()['state'] == 'stop':
-            return False
-        else:
-            return True
+#        if self.client.status()['state'] == 'stop':
+#            return False
+#        else:
+#            return True
+
+        pass
 
 
 def main():

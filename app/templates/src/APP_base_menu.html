@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='src/css/simple-line-icons.css') }}" type="text/css" />
   <link rel="stylesheet" href="{{ url_for('static', filename='src/css/font.css') }}" type="text/css" />
   <link rel="stylesheet" href="{{ url_for('static', filename='src/css/app.css') }}" type="text/css" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='src/js/nestable/nestable.css') }}" type="text/css" />
 
     <!--[if lt IE 9]>
     <script src="js/ie/html5shiv.js"></script>
@@ -27,10 +28,10 @@
         <a class="btn btn-link visible-xs" data-toggle="class:nav-off-screen,open" data-target="#nav,html">
           <i class="icon-list"></i>
         </a>
-        <a href="index.html" class="navbar-brand text-lt">
+        <a href="{{ url_for('main.dashboard') }}" class="navbar-brand text-lt">
           <i class="icon-earphones"></i>
           <img src="images/logo.png" alt="." class="hide">
-          <span class="hidden-nav-xs m-l-sm">Musik</span>
+          <span class="hidden-nav-xs m-l-sm">Dashboard</span>
         </a>
         <a class="btn btn-link visible-xs" data-toggle="dropdown" data-target=".user">
           <i class="icon-settings"></i>
@@ -97,36 +98,49 @@
               </section> -->
             </section>
           </li>
-          <li class="dropdown">
-            <a href="#" class="dropdown-toggle bg clear" data-toggle="dropdown">
-              <span class="thumb-sm avatar pull-right m-t-n-sm m-b-n-sm m-l-sm">
-                <img src="images/a0.png" alt="...">
-              </span>
-              John.Smith <b class="caret"></b>
-            </a>
-            <ul class="dropdown-menu animated fadeInRight">
-              <li>
-                <span class="arrow top"></span>
-                <a href="#">Settings</a>
-              </li>
-              <li>
-                <a href="profile.html">Profile</a>
-              </li>
-              <li>
-                <a href="#">
-                  <span class="badge bg-danger pull-right">3</span>
-                  Notifications
+          {% if current_user.is_authenticated() %}
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle bg clear" data-toggle="dropdown">
+                  <span class="thumb-sm avatar pull-right m-t-n-sm m-b-n-sm m-l-sm">
+                    <img src="images/a0.png" alt="...">
+                  </span>
+                  John.Smith <b class="caret"></b>
                 </a>
+                <ul class="dropdown-menu animated fadeInRight">
+                  <li>
+                    <span class="arrow top"></span>
+                    <a href="{{ url_for('main.user', username=current_user.username) }}">Profile</a>
+                  </li>
+                  <li>
+                    <a href="{{ url_for('auth.change_password') }}">Change password</a>
+                  </li>
+                  <li>
+                    <a href="{{ url_for('auth.change_email_request') }}">Change email</a>
+                  </li>
+                  <li>
+                    <a href="{{ url_for('main.users') }}">
+                      <span class="badge bg-danger pull-right">3</span>
+                      Users
+                    </a>
+                  </li>
+                  <li>
+                    <a href="{{ url_for('static', filename='docs/index.html') }}">Documentation</a>
+                  </li>
+                  <li class="divider"></li>
+                  <li>
+                    <a href="{{ url_for('auth.logout') }}" data-toggle="ajaxModal" >Logout</a>
+                  </li>
+                </ul>
               </li>
-              <li>
-                <a href="docs.html">Help</a>
-              </li>
-              <li class="divider"></li>
-              <li>
-                <a href="modal.lockme.html" data-toggle="ajaxModal" >Logout</a>
-              </li>
+
+            {% else %}
+            <ul class="nav navbar-nav m-n hidden-xs nav-user user">
+                <li>
+                 <span class="pull-right">
+                 <a href="{{ url_for('auth.login') }}" >Logout</a>
+                </li>
             </ul>
-          </li>
+            {% endif %}
         </ul>
       </div>
     </header>
@@ -138,34 +152,33 @@
             <section class="w-f-md scrollable">
               <div class="slim-scroll" data-height="auto" data-disable-fade-out="true" data-distance="0" data-size="10px" data-railOpacity="0.2">
 
-
-
                 <!-- nav -->
                 <nav class="nav-primary hidden-xs">
                   <ul class="nav bg clearfix">
-                    <li class="hidden-nav-xs padder m-t m-b-sm text-xs text-muted">
+                    <!-- <li class="hidden-nav-xs padder m-t m-b-sm text-xs text-muted">
                       Discover
                     </li>
                     <li>
-                      <a href="index.html">
-                        <i class="icon-disc icon  "></i>
-                        <span class="font-bold">What's new</span>
+                      <a href="">
+                        <i class="icon-emoticon-smile icon"></i>
+                        <span class="font-bold">Dashboard</span>
+                      </a>
+                  </li> -->
+
+                    <li>
+                      <a href="{{ url_for('alarm.index') }}">
+                        <i class="icon-cup icon  "></i>
+                        <!-- <b class="badge bg-primary pull-right">6</b> -->
+                        <span class="font-bold">Alarm</span>
                       </a>
                     </li>
-                    <li>
+                    <!--<li>
                       <a href="genres.html">
                         <i class="icon-music-tone-alt icon  "></i>
-                        <span class="font-bold">Genres</span>
+                        <span class="font-bold">Medias</span>
                       </a>
                     </li>
-                    <li>
-                      <a href="events.html">
-                        <i class="icon-drawer icon  "></i>
-                        <b class="badge bg-primary pull-right">6</b>
-                        <span class="font-bold">Events</span>
-                      </a>
-                    </li>
-                    <li>
+                     <li>
                       <a href="listen.html">
                         <i class="icon-list icon   "></i>
                         <span class="font-bold">Listen</span>
@@ -191,7 +204,7 @@
                         </span>
                         <i class="icon-screen-desktop icon">
                         </i>
-                        <span>Layouts</span>
+                        <span class="font-bold">Layouts</span>
                       </a>
                       <ul class="nav dk text-sm">
                         <li  class="active">
@@ -216,41 +229,43 @@
                           </a>
                         </li>
                       </ul>
-                    </li>
+                    </li> -->
                     <li >
                       <a href="#" class="auto">
                         <span class="pull-right text-muted">
                           <i class="fa fa-angle-left text"></i>
                           <i class="fa fa-angle-down text-active"></i>
                         </span>
-                        <i class="icon-chemistry icon">
+                        <i class="icon-music-tone-alt icon">
                         </i>
-                        <span>UI Kit</span>
+                        <span class="font-bold">Medias</span>
                       </a>
                       <ul class="nav dk text-sm">
                         <li >
-                          <a href="buttons.html" class="auto">
+                          <a href="{{ url_for('radio.index') }}" class="auto">
+                            <b class="badge bg-info pull-right">120</b>
                             <i class="fa fa-angle-right text-xs"></i>
 
-                            <span>Buttons</span>
+                            <span>Radios</span>
                           </a>
                         </li>
                         <li >
-                          <a href="icons.html" class="auto">
+                          <a href="{{ url_for('radio.podcast') }}" class="auto">
                             <b class="badge bg-info pull-right">369</b>
                             <i class="fa fa-angle-right text-xs"></i>
 
-                            <span>Icons</span>
+                            <span>Podcasts</span>
                           </a>
                         </li>
                         <li >
-                          <a href="grid.html" class="auto">
+                          <a href="{{ url_for('radio.music') }}" class="auto">
+                            <b class="badge bg-info pull-right">10</b>
                             <i class="fa fa-angle-right text-xs"></i>
 
-                            <span>Grid</span>
+                            <span>Music</span>
                           </a>
                         </li>
-                        <li >
+                        <!-- <li >
                           <a href="widgets.html" class="auto">
                             <b class="badge bg-dark pull-right">8</b>
                             <i class="fa fa-angle-right text-xs"></i>
@@ -272,7 +287,7 @@
                             <span>List group</span>
                           </a>
                         </li>
-                        <li >
+                         <li >
                           <a href="#table" class="auto">
                             <span class="pull-right text-muted">
                               <i class="fa fa-angle-left text"></i>
@@ -419,9 +434,9 @@
                           </a>
                         </li>
                       </ul>
-                    </li>
+                  </li> -->
                   </ul>
-                  <ul class="nav text-sm">
+                  <!-- <ul class="nav text-sm">
                     <li class="hidden-nav-xs padder m-t m-b-sm text-xs text-muted">
                       <span class="pull-right"><a href="#"><i class="icon-plus i-lg"></i></a></span>
                       Playlist
@@ -439,7 +454,7 @@
                         <span>Jazz</span>
                       </a>
                     </li>
-                  </ul>
+                  </ul> -->
                 </nav>
                 <!-- / nav -->
               </div>
@@ -507,7 +522,7 @@
                         {{ message }}
                     </div>
                 {% endfor %}
-                
+
 
                 {% block content %}
 
@@ -625,6 +640,10 @@
   <script type="text/javascript" src="{{ url_for('static', filename='src/js/jPlayer/jquery.jplayer.min.js') }}"></script>
   <script type="text/javascript" src="{{ url_for('static', filename='src/js/jPlayer/add-on/jplayer.playlist.min.js') }}"></script>
   <script type="text/javascript" src="{{ url_for('static', filename='src/js/jPlayer/demo.js') }}"></script>
+
+  <script src="{{ url_for('static', filename='src/js/sortable/jquery.sortable.js') }}"></script>
+  <script src="{{ url_for('static', filename='src/js/nestable/jquery.nestable.js') }}"></script>
+  <script src="{{ url_for('static', filename='src/js/nestable/demo.js') }}"></script>
 
 </body>
 </html>

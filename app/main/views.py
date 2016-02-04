@@ -10,7 +10,10 @@ from . import main
 from .forms import EditProfileForm, EditProfileAdminForm, playerForm,\
                    ContactForm, snoozeForm, ChronoForm, LoginForm
 from .. import db
-from ..mympd import player
+
+# from ..mympd import player
+from ..OLD_mympd import PersistentMPDClient
+
 from ..email import send_email
 from ..models import Role, User, Alarm, Music
 from ..decorators import admin_required
@@ -20,15 +23,14 @@ from ..functions import snooze, Chrono
 # ========================================
 # ============= PUBLIC PAGES  ============
 # ========================================
-mpd_player = player()
+# mpd_player = player()
+mpd_player = PersistentMPDClient()
 
 
 @main.before_request
 def mpd_status():
     if current_user.is_authenticated():
         g.mpd_status = mpd_player.is_playing()
-    else:
-        g.mpd_status = None
 
 
 @main.route('/login', methods=['GET', 'POST'])
@@ -41,6 +43,7 @@ def login():
             login_user(user, form.remember_me.data)
             return redirect(request.args.get('next') or
                             url_for('.dashboard'))
+            # return redirect(url_for('.dashboard'))
         flash('Invalid username or password.')
         return redirect(url_for('.login'))
     return render_template('src/API_signin.html', form=form)
@@ -91,7 +94,6 @@ def contact():
     elif request.method == 'GET':
         # return render_template('public/contact.html', form=form, form2=form2)
         return render_template('src/SITE_contact.html', form=form)
-
 
 
 @main.route('/apiclock')
@@ -192,19 +194,18 @@ def dashboard(action,
         return redirect(url_for('.dashboard'))
 
     elif form1.submit.data:
-        print "playing form"
         """PLAY : Depending on media type, get id and then request for url."""
 
         if form1.radio.data != "0":
             mediaid = form1.radio.data
-            print "ID Med playing : "+mediaid
             choosen_media = Music.query.filter(Music.id == mediaid).first()
-            mpd_player.play(choosen_media.url)
+            mpd_player.play_media(choosen_media.url)
 
         elif form1.radio.data == "0" and form1.music.data != "0":
             mediaid = form1.music.data
             choosen_media = Music.query.filter(Music.id == mediaid).first()
-            mpd_player.play(choosen_media.name)
+            print choosen_media.name
+            mpd_player.play_media(choosen_media.name)
 
         elif form1.radio.data == "0" and form1.music.data == "0":
             mediaid = "0"
@@ -312,9 +313,8 @@ def users():
 @admin_required
 def config():
     app = current_app._get_current_object()
-    list_config = []
-    for key, value in app.config.iteritems():
-        temp = [key,value]
-        list_config.append(temp)
+    # list config values containing FLASKY
+    list_config = [[key, value] for key, value in app.config.iteritems()
+                   if 'FLASKY' in key]
 
     return render_template('admin/config.html', config=list_config)

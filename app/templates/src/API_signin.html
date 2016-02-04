@@ -37,7 +37,7 @@
           <strong>Sign in to get in touch</strong>
         </header>
 
-        <form method="POST" action="#">
+        <form method="POST" action="{{ url_for('main.login') }}">
           <div class="form-group">
             <input type="email" name="email" placeholder="Email" class="form-control rounded input-lg text-center no-border">
           </div>
@@ -55,7 +55,7 @@
           <div class="text-center m-t m-b"><a href="#"><small>Forgot password?</small></a></div>
           <div class="line line-dashed"></div>
           <p class="text-muted text-center"><small>Do not have an account?</small></p>
-          <a href="signup.html" class="btn btn-lg btn-info btn-block rounded">Create an account</a>
+          <a href="{{ url_for('auth.register') }}" class="btn btn-lg btn-info btn-block rounded">Create an account</a>
         </form>
       </section>
     </div>

@@ -6,6 +6,9 @@ from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.login import LoginManager
 from config import config
 
+# test GAUGUETTE
+from OLD_mympd import PersistentMPDClient
+
 import logging
 from logging.handlers import RotatingFileHandler
 import sys
@@ -14,6 +17,9 @@ bootstrap = Bootstrap()
 mail      = Mail()
 moment    = Moment()
 db        = SQLAlchemy()
+
+# test GAUGUETTE
+PersistentMPDClient = PersistentMPDClient()
 
 login_manager                    = LoginManager()
 login_manager.session_protection = 'strong'
@@ -28,7 +34,8 @@ def create_app(config_name):
     app.config.from_object(config[config_name])
 
     # Configure logging package from app config
-    logging.basicConfig(filename=app.config['LOGGING_PATH'] ,level=app.config['LOGGING_LEVEL'])
+    logging.basicConfig(filename=app.config['LOGGING_PATH'],
+                        level=app.config['LOGGING_LEVEL'])
     logging.getLogger().addHandler(logging.StreamHandler())
 
     # Initialize config class if needed
@@ -38,6 +45,9 @@ def create_app(config_name):
     moment.init_app(app)
     db.init_app(app)
     login_manager.init_app(app)
+
+    # test GAUGUETTE
+    #PersistentMPDClient(app)
 
     # Manage blueprint
     from .main import main as main_blueprint
