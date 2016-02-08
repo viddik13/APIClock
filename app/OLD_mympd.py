@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+#
 import mpd
 import time
 import argparse
@@ -103,6 +103,22 @@ class PersistentMPDClient(mpd.MPDClient):
         self.setvol(90)
         self.play()
 
+    def next_play(self):
+        # load current user's actual playlit of current type media
+        # play current item of list +1
+        test = self.currentsong()['file']
+        # get media type (http = stream), load and play next item of playlist
+        if 'http' in test:
+            print "media"
+            print test
+        else:
+            print 'music'
+        print test
+
+    def prev_play(self):
+        # get current user's actual playlit of current type media
+        pass
+
     def chrono(self,
                chrono,
                media="http://audio.scdn.arkena.com/11010/franceculture-midfi128.mp3"):
@@ -137,14 +153,6 @@ class PersistentMPDClient(mpd.MPDClient):
         self.setvol(nvol)
         # print int(status['volume'])
         # print "Volume : %d" % nvol
-
-    def is_playing(self):
-        """Verify player playing and update globale MPDstatut."""
-        if self.status()['state'] == 'stop':
-            return False
-        else:
-            return True
-
 
 def main():
     """Playing media."""

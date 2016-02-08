@@ -29,8 +29,13 @@ mpd_player = PersistentMPDClient()
 
 @main.before_request
 def mpd_status():
-    if current_user.is_authenticated():
-        g.mpd_status = mpd_player.is_playing()
+    # if current_user.is_authenticated():
+    #     # g.mpd_status = mpd_player.is_playing()
+    #     if mpd_player.status()['state'] == 'stop':
+    #         g.mpd_status = False
+    #     else:
+    #         g.mpd_status = True
+    g.mpd_status = False
 
 
 @main.route('/login', methods=['GET', 'POST'])
@@ -149,7 +154,7 @@ def dashboard(action,
       musique="http://audio.scdn.arkena.com/11010/franceculture-midfi128.mp3"):
 
     """Get and Print MPD state."""
-    MPDstatut = mpd_player.is_playing()
+    # MPDstatut = mpd_player.is_playing()
     # MPDstatut = None
 
     alarms = Alarm.query.filter_by(users=current_user.id).all()
@@ -234,6 +239,11 @@ def dashboard(action,
     elif action == '3':
         """Decrease volume."""
         mpd_player.voldown()
+        return redirect(url_for('.dashboard'))
+
+    elif action == '4':
+        """Display status"""
+        mpd_player.next_play()
         return redirect(url_for('.dashboard'))
 
     else:

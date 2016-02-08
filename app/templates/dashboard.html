@@ -71,6 +71,7 @@
         <a href="{{ url_for('main.dashboard', action='0', musique='0') }}" class="btn btn-default btn-lg active" role="button">Stop</a>
         <a href="{{ url_for('main.dashboard', action='2', musique='0') }}" class="btn btn-primary btn-lg active" role="button"> + Fort </a>
         <a href="{{ url_for('main.dashboard', action='3', musique='0') }}" class="btn btn-default btn-lg active" role="button"> - Fort </a>
+        <a href="{{ url_for('main.dashboard', action='4', musique='0') }}" class="btn btn-default btn-lg active" role="button"> current </a>
         {% if g.mpd_status == True %}
             <h2 style="display:inline;"><span class="label label-success">MPD ON</span></h2>
         {% else %}
