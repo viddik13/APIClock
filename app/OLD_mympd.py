@@ -1,11 +1,8 @@
 # -*- coding: utf-8 -*-
-#
+
 import mpd
-import time
-import argparse
 import podcastparser
 import urllib
-import pprint
 import socket
 
 
@@ -153,38 +150,3 @@ class PersistentMPDClient(mpd.MPDClient):
         self.setvol(nvol)
         # print int(status['volume'])
         # print "Volume : %d" % nvol
-
-def main():
-    """Playing media."""
-    parser = argparse.ArgumentParser(
-        description="This script play a given media on the mpd (local) server")
-    parser.add_argument("-c",
-        choices=['play', 'stop', 'status', 'volup', 'voldown', 'pod'],
-        required=True)
-    parser.add_argument("-u", help="url to play")
-
-    args = parser.parse_args()
-    media = args.u
-    command = args.c
-    myplayer = PersistentMPDClient()
-    if command == 'play':
-        if media is not None:
-            myplayer.play(media)
-        else:
-            print "You must enter a media url/path to play"
-    elif command == 'stop':
-        myplayer.stop()
-    elif command == 'volup':
-        myplayer.volup()
-    elif command == 'voldown':
-        myplayer.voldown()
-    elif command == 'status':
-        state = myplayer.status()
-        for cle, val in state.items():
-            print cle + " : " + val
-    elif command == 'podlist':
-        parsed = podcastparser.parse(media, urllib.urlopen(media))
-        pprint.pprint(parsed)
-
-if __name__ == "__main__":
-    main()

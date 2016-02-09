@@ -2,17 +2,15 @@ import os
 import sys
 import time
 import feedparser
-#import moment
 
 from crontab import CronTab
-from mpd import MPDClient
 from threading import Thread
 from sqlalchemy.sql import and_
 from flask.ext.login import current_user
 
 from . import db
 from .models import Alarm, Music
-from mympd import player
+from OLD_mympd import PersistentMPDClient
 
 
 # get current environment variable for crontab commands
@@ -29,12 +27,14 @@ class Snooze(Thread):
     def __init__(self, radiosnooze, minutessnooze):
         Thread.__init__(self)
         self.radio = radiosnooze
-        self.duree = minutessnooze * 60
-        self.client = player()
+        self.duree = minutessnooze*60
+        self.client = PersistentMPDClient()
+        self.client.clear()
 
     def run(self):
         """start jouerMPD stop during minutesnooze then stop MPD."""
-        self.client.play(self.radio)
+        self.client.add(self.radio)
+        self.client.play()
         time.sleep(self.duree)
         self.client.stop()
 
@@ -52,12 +52,21 @@ class Chrono_(Thread):
         Thread.__init__(self)
         self.media = mediachrono
         self.duree = minuteschrono * 60
-        self.client = player()
+        self.client = PersistentMPDClient()
+        self.client.clear()
 
     def run(self):
         """start jouerMPD after a delay = minuteschrono."""
+        print "ok"
         time.sleep(self.duree)
-        self.client.play(self.media)
+        self.client.add('/home/pi/Apiclock_PROD/app/static/music/UPLOAD_call.mp3')
+        self.client.play()
+
+        # DEBUGG
+        print "----------------"
+        print self.media
+        # DEBUGG
+
         time.sleep(120)
         self.client.stop()
 
@@ -153,7 +162,6 @@ def statealarm(idalarm):
 
 def getpodcasts():
     """Get all emissions for the current_user podcast."""
-
     podcasts = Music.query.filter(and_(Music.music_type == '2',
                                        Music.users == current_user.id)).all()
     listepodcast = []

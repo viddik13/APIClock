@@ -12,11 +12,12 @@ from werkzeug.utils import secure_filename
 from . import radio
 from .forms import AddMusicForm, PlayRadio
 from .. import db
-from ..mympd import player
+# from ..mympd import player
+from ..OLD_mympd import PersistentMPDClient
 from ..models import Music
 from ..decorators import admin_required
 
-mpd_player = player()
+mpd_player = PersistentMPDClient()
 
 
 @radio.route('/', methods=['GET', 'POST'], defaults={'action': 0, 'radioe': 0})
@@ -206,7 +207,6 @@ def music():
     """Display user's music."""
     musics = Music.query.filter(and_(Music.music_type == '3',
                                 Music.users == current_user.id)).all()
-
     return render_template('radio/music.html', radios=musics)
 
 
@@ -215,7 +215,10 @@ def music():
 @admin_required
 def local(radio):
     """Play arg "radio" in local HTML player."""
-    return render_template('radio/player.html', music=radio)
+    if radio[:4] == 'http':
+        # add a '/' to source path in template Depending on added true/false
+        added = True
+    return render_template('radio/player.html', music=radio, added=added)
 
 
 @radio.route('/distant/<path:radio>')
@@ -226,6 +229,6 @@ def distant(radio):
     if radio == 'stop':
         mpd_player.stop()
         return redirect(url_for('.index'))
-
-    mpd_player.play(radio)
+    media = radio
+    mpd_player.play_media(media)
     return render_template('radio/distant.html')

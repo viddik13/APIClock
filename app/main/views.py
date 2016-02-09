@@ -1,19 +1,15 @@
 # coding: utf-8
 import os
 
-from flask import render_template, redirect, url_for, flash, request, current_app, g
+from flask import render_template, redirect, url_for, flash, request,\
+                  current_app, g
 from flask.ext.login import login_user, login_required, current_user
-from flask.ext.mail import Message
-from mpd import MPDClient
 
 from . import main
 from .forms import EditProfileForm, EditProfileAdminForm, playerForm,\
                    ContactForm, snoozeForm, ChronoForm, LoginForm
 from .. import db
-
-# from ..mympd import player
 from ..OLD_mympd import PersistentMPDClient
-
 from ..email import send_email
 from ..models import Role, User, Alarm, Music
 from ..decorators import admin_required
@@ -29,13 +25,11 @@ mpd_player = PersistentMPDClient()
 
 @main.before_request
 def mpd_status():
-    # if current_user.is_authenticated():
-    #     # g.mpd_status = mpd_player.is_playing()
-    #     if mpd_player.status()['state'] == 'stop':
-    #         g.mpd_status = False
-    #     else:
-    #         g.mpd_status = True
-    g.mpd_status = False
+    if current_user.is_authenticated():
+        if mpd_player.status()['state'] == 'stop':
+            g.mpd_status = False
+        else:
+            g.mpd_status = True
 
 
 @main.route('/login', methods=['GET', 'POST'])
@@ -168,6 +162,10 @@ def dashboard(action,
         radiosnooze = Music.query.filter(Music.id == radiosnooze).first()
         radiosnooze = radiosnooze.url
         minutessnooze = int(formsnooze.minutessnooze.data)
+        print "------------------"
+        print radiosnooze
+        print "------------------"
+        print minutessnooze
         snooze(radiosnooze, minutessnooze)
         return redirect(url_for('.dashboard'))
 
@@ -182,12 +180,16 @@ def dashboard(action,
             """
             mediaid = form_chrono.radio.data
             choosen_media = Music.query.filter(Music.id == mediaid).first()
+            print "------------------ CHRONOR"
+            print choosen_media.url
             Chrono(choosen_media.url, delay_chrono)
 
         elif form_chrono.radio.data == "0" and form_chrono.music.data != "0":
             """launch chrono (func and thread) with music and choosen delay"""
             mediaid = form_chrono.music.data
             choosen_media = Music.query.filter(Music.id == mediaid).first()
+            print "------------------ CHRONOR"
+            print choosen_media.url
             Chrono(choosen_media.url, delay_chrono)
 
         elif form_chrono.radio.data == "0" and form_chrono.music.data == "0":
@@ -209,6 +211,8 @@ def dashboard(action,
         elif form1.radio.data == "0" and form1.music.data != "0":
             mediaid = form1.music.data
             choosen_media = Music.query.filter(Music.id == mediaid).first()
+            print choosen_media
+            print '--------------'
             print choosen_media.name
             mpd_player.play_media(choosen_media.name)
 

@@ -4,9 +4,16 @@
 
 {% block page_content %}
 
-    <audio controls autoplay>
-            <source src="/{{ music }}" type="audio/mp3">
-            Your browser does not support this audio format.
-    </audio>
+    {% if added is defined %}
+        <audio controls autoplay>
+                <source src="{{ music }}" type="audio/mp3">
+                Your browser does not support this audio format.
+        </audio>
+    {% else %}
+        <audio controls autoplay>
+                <source src="/{{ music }}" type="audio/mp3">
+                Your browser does not support this audio format.
+        </audio>
+    {% endif %}
 
 {% endblock %}
