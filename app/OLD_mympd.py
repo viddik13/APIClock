@@ -100,21 +100,6 @@ class PersistentMPDClient(mpd.MPDClient):
         except socket.error as e:
             print("Connection refused.")
 
-    # print(e)
-
-    # def try_cmd(self, cmd_fun):
-    #     @wraps(cmd_fun)
-    #     def wrapper(*pargs, **kwargs):
-    #         try:
-    #             #                print("Attemping to ping...")
-    #             self.ping()
-    #         except (mpd.ConnectionError, OSError) as e:
-    #             #                print("lost connection.")
-    #             #                print("trying to reconnect.")
-    #             self.do_connect()
-    #         return cmd_fun(*pargs, **kwargs)
-    #     return wrapper
-
     def play_media(self,
         media="http://audio.scdn.arkena.com/11010/franceculture-midfi128.mp3"):
         """Start player with media(url) arg."""
@@ -201,3 +186,16 @@ class PersistentMPDClient(mpd.MPDClient):
 
         result = self.try_cmd(function())
         return result
+
+        def is_playing(self):
+            def function():
+                """get player status."""
+                status_check = self.status()
+                if status_check['state'] == 'stop':
+                    return False
+                else:
+                    return True
+
+            result = self.try_cmd(function())
+            return result
+
